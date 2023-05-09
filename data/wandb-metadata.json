@@ -1,0 +1,21 @@
+{
+    "os": "Linux-5.19.0-1024-aws-x86_64-with-glibc2.35",
+    "python": "3.10.6",
+    "heartbeatAt": "2023-05-09T15:43:45.010929",
+    "startedAt": "2023-05-09T15:43:24.100325",
+    "docker": null,
+    "cuda": null,
+    "args": null,
+    "state": "running",
+    "program": "/home/ubuntu/git/litte_wandb/little_wandb/main.py",
+    "codePath": "little_wandb/main.py",
+    "git": {
+        "remote": "git@gitlab.img.astrazeneca.net:RA/experimental/litte_wandb.git",
+        "commit": "d600a4126cb31d70d4cdd4b5ff455a6ec21adee5"
+    },
+    "email": "",
+    "root": "/home/ubuntu/git/litte_wandb",
+    "host": "cgebbe-r6id.img.astrazeneca.net",
+    "username": "ubuntu",
+    "executable": "/home/ubuntu/git/litte_wandb/venv/bin/python"
+}
