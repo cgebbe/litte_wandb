@@ -1,0 +1,3528 @@
+diff --git a/LICENCE b/LICENCE
+new file mode 100644
+index 0000000..b5afdd9
+--- /dev/null
++++ b/LICENCE
+@@ -0,0 +1,23 @@
++# Copied from https://github.com/wandb/wandb/blob/7a7dd30e94e3c27e0af9058248320fe30967157e/LICENSE
++
++MIT License
++
++Copyright (c) 2021 Weights and Biases, Inc.
++
++Permission is hereby granted, free of charge, to any person obtaining a copy
++of this software and associated documentation files (the "Software"), to deal
++in the Software without restriction, including without limitation the rights
++to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
++copies of the Software, and to permit persons to whom the Software is
++furnished to do so, subject to the following conditions:
++
++The above copyright notice and this permission notice shall be included in all
++copies or substantial portions of the Software.
++
++THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
++FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
++AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
++LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
++OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
++SOFTWARE.
+\ No newline at end of file
+diff --git a/README.md b/README.md
+index 93cc13f..2bb95e2 100644
+--- a/README.md
++++ b/README.md
+@@ -1,92 +1,24 @@
+ # litte_wandb
+ 
+-Extracts the automatic logging part from the weights and biases library.
++Extracts the [automatic logging](https://docs.wandb.ai/guides/track/log#automatically-logged-data) part from the weights and biases library.
+ 
+-## Getting started
++## How it works
+ 
+-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
++Simply call `little_wandb.dump_info()` to track the following information:
+ 
+-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
++- system info (hostname, user, time, OS, python executable, CLI arguments)
++- pip- or conda-environment (think pip freeze)
++- git information including diff patches to current local commit *and recent upstream commit*
++- copy of currently executing file
+ 
+-## Add your files
++## Improvement ideas
+ 
+-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
+-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
++- Feature: environment variables !!! Shall we also add such an option upstream?
++- Problem: If called from a jupyter notebook, it will not copy the executing file.
++  - root cause: wandb determines the program via `__main__.__file__` which raises an AttributeError in Jupyter
++  - solution: fix upstream `_get_program` in wandb/sdk/wandb_settings.py
++- Problem: The diff patch does not include (new) untracked files
++  - solution: fix upstream `_save_patches` in wandb/sdk/internal/system/system_info.py (`git diff --no-index`?!)
++- Feature: Track GPU type
++- Feature: editable installs are not easily tracked. Either raise error or get git information for editably installed libs?
+ 
+-```
+-cd existing_repo
+-git remote add origin https://gitlab.img.astrazeneca.net/RA/experimental/litte_wandb.git
+-git branch -M master
+-git push -uf origin master
+-```
+-
+-## Integrate with your tools
+-
+-- [ ] [Set up project integrations](https://gitlab.img.astrazeneca.net/RA/experimental/litte_wandb/-/settings/integrations)
+-
+-## Collaborate with your team
+-
+-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
+-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
+-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
+-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
+-- [ ] [Automatically merge when pipeline succeeds](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+-
+-## Test and Deploy
+-
+-Use the built-in continuous integration in GitLab.
+-
+-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
+-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
+-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
+-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
+-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+-
+-***
+-
+-# Editing this README
+-
+-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
+-
+-## Suggestions for a good README
+-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+-
+-## Name
+-Choose a self-explaining name for your project.
+-
+-## Description
+-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+-
+-## Badges
+-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+-
+-## Visuals
+-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+-
+-## Installation
+-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+-
+-## Usage
+-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+-
+-## Support
+-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+-
+-## Roadmap
+-If you have ideas for releases in the future, it is a good idea to list them in the README.
+-
+-## Contributing
+-State if you are open to contributions and what your requirements are for accepting them.
+-
+-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+-
+-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+-
+-## Authors and acknowledgment
+-Show your appreciation to those who have contributed to the project.
+-
+-## License
+-For open source projects, say how it is licensed.
+-
+-## Project status
+-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+diff --git a/example_notebook.ipynb b/example_notebook.ipynb
+new file mode 100644
+index 0000000..a611d25
+--- /dev/null
++++ b/example_notebook.ipynb
+@@ -0,0 +1,260 @@
++{
++ "cells": [
++  {
++   "cell_type": "code",
++   "execution_count": 1,
++   "metadata": {},
++   "outputs": [],
++   "source": [
++    "%load_ext autoreload\n",
++    "%autoreload 2"
++   ]
++  },
++  {
++   "cell_type": "code",
++   "execution_count": 20,
++   "metadata": {},
++   "outputs": [
++    {
++     "name": "stderr",
++     "output_type": "stream",
++     "text": [
++      "DEBUG:little_wandb._main:{'_args': None,\n",
++      " '_async_upload_concurrency_limit': None,\n",
++      " '_cli_only_mode': None,\n",
++      " '_colab': False,\n",
++      " '_config_dict': None,\n",
++      " '_console': <SettingsConsole.WRAP: 1>,\n",
++      " '_cuda': None,\n",
++      " '_disable_meta': None,\n",
++      " '_disable_service': False,\n",
++      " '_disable_stats': None,\n",
++      " '_disable_viewer': None,\n",
++      " '_except_exit': None,\n",
++      " '_executable': '/home/ubuntu/git/litte_wandb/venv/bin/python',\n",
++      " '_extra_http_headers': None,\n",
++      " '_flow_control_custom': False,\n",
++      " '_flow_control_disabled': False,\n",
++      " '_internal_check_process': 8,\n",
++      " '_internal_queue_timeout': 2,\n",
++      " '_ipython': False,\n",
++      " '_jupyter': True,\n",
++      " '_jupyter_name': None,\n",
++      " '_jupyter_path': None,\n",
++      " '_jupyter_root': None,\n",
++      " '_kaggle': False,\n",
++      " '_live_policy_rate_limit': None,\n",
++      " '_live_policy_wait_time': None,\n",
++      " '_log_level': None,\n",
++      " '_network_buffer': None,\n",
++      " '_noop': False,\n",
++      " '_notebook': True,\n",
++      " '_offline': False,\n",
++      " '_os': 'Linux-5.19.0-1024-aws-x86_64-with-glibc2.35',\n",
++      " '_platform': 'linux',\n",
++      " '_python': '3.10.6',\n",
++      " '_runqueue_item_id': None,\n",
++      " '_save_requirements': True,\n",
++      " '_service_transport': None,\n",
++      " '_service_wait': 30.0,\n",
++      " '_start_datetime': datetime.datetime(2023, 5, 9, 17, 30, 36, 344702),\n",
++      " '_start_time': 1683653436.3447022,\n",
++      " '_stats_join_assets': True,\n",
++      " '_stats_neuron_monitor_config_path': None,\n",
++      " '_stats_open_metrics_endpoints': None,\n",
++      " '_stats_open_metrics_filters': ('.*',),\n",
++      " '_stats_pid': 3916455,\n",
++      " '_stats_sample_rate_seconds': 2.0,\n",
++      " '_stats_samples_to_average': 15,\n",
++      " '_sync': False,\n",
++      " '_tmp_code_dir': '/home/ubuntu/git/litte_wandb/wandb/run-20230509_173036-None/tmp/code',\n",
++      " '_tracelog': None,\n",
++      " '_unsaved_keys': None,\n",
++      " '_windows': False,\n",
++      " 'allow_val_change': None,\n",
++      " 'anonymous': None,\n",
++      " 'api_key': None,\n",
++      " 'base_url': 'https://api.wandb.ai',\n",
++      " 'code_dir': None,\n",
++      " 'config_paths': None,\n",
++      " 'console': 'auto',\n",
++      " 'deployment': 'cloud',\n",
++      " 'disable_code': None,\n",
++      " 'disable_git': False,\n",
++      " 'disable_hints': None,\n",
++      " 'disable_job_creation': False,\n",
++      " 'disabled': False,\n",
++      " 'docker': None,\n",
++      " 'email': None,\n",
++      " 'entity': None,\n",
++      " 'files_dir': '/home/ubuntu/git/litte_wandb/example_output',\n",
++      " 'force': None,\n",
++      " 'git_commit': None,\n",
++      " 'git_remote': 'origin',\n",
++      " 'git_remote_url': None,\n",
++      " 'git_root': None,\n",
++      " 'heartbeat_seconds': 30,\n",
++      " 'host': 'cgebbe-r6id.img.astrazeneca.net',\n",
++      " 'ignore_globs': (),\n",
++      " 'init_timeout': 60.0,\n",
++      " 'is_local': False,\n",
++      " 'label_disable': None,\n",
++      " 'launch': None,\n",
++      " 'launch_config_path': None,\n",
++      " 'log_dir': '/home/ubuntu/git/litte_wandb/wandb/run-20230509_173036-None/logs',\n",
++      " 'log_internal': '/home/ubuntu/git/litte_wandb/wandb/run-20230509_173036-None/logs/debug-internal.log',\n",
++      " 'log_symlink_internal': '/home/ubuntu/git/litte_wandb/wandb/debug-internal.log',\n",
++      " 'log_symlink_user': '/home/ubuntu/git/litte_wandb/wandb/debug.log',\n",
++      " 'log_user': '/home/ubuntu/git/litte_wandb/wandb/run-20230509_173036-None/logs/debug.log',\n",
++      " 'login_timeout': None,\n",
++      " 'magic': None,\n",
++      " 'mode': 'online',\n",
++      " 'notebook_name': None,\n",
++      " 'problem': 'fatal',\n",
++      " 'program': '<python with no main file>',\n",
++      " 'program_relpath': None,\n",
++      " 'project': None,\n",
++      " 'project_url': '',\n",
++      " 'quiet': None,\n",
++      " 'reinit': None,\n",
++      " 'relogin': None,\n",
++      " 'resume': None,\n",
++      " 'resume_fname': '/home/ubuntu/git/litte_wandb/wandb/wandb-resume.json',\n",
++      " 'resumed': False,\n",
++      " 'root_dir': '/home/ubuntu/git/litte_wandb',\n",
++      " 'run_group': None,\n",
++      " 'run_id': None,\n",
++      " 'run_job_type': None,\n",
++      " 'run_mode': 'run',\n",
++      " 'run_name': None,\n",
++      " 'run_notes': None,\n",
++      " 'run_tags': None,\n",
++      " 'run_url': '',\n",
++      " 'sagemaker_disable': None,\n",
++      " 'save_code': True,\n",
++      " 'settings_system': '/home/ubuntu/.config/wandb/settings',\n",
++      " 'settings_workspace': '/home/ubuntu/git/litte_wandb/wandb/settings',\n",
++      " 'show_colors': None,\n",
++      " 'show_emoji': None,\n",
++      " 'show_errors': True,\n",
++      " 'show_info': True,\n",
++      " 'show_warnings': True,\n",
++      " 'silent': False,\n",
++      " 'start_method': None,\n",
++      " 'strict': None,\n",
++      " 'summary_errors': None,\n",
++      " 'summary_timeout': 60,\n",
++      " 'summary_warnings': 5,\n",
++      " 'sweep_id': None,\n",
++      " 'sweep_param_path': None,\n",
++      " 'sweep_url': '',\n",
++      " 'symlink': True,\n",
++      " 'sync_dir': '/home/ubuntu/git/litte_wandb/wandb/run-20230509_173036-None',\n",
++      " 'sync_file': '/home/ubuntu/git/litte_wandb/wandb/run-20230509_173036-None/run-None.wandb',\n",
++      " 'sync_symlink_latest': '/home/ubuntu/git/litte_wandb/wandb/latest-run',\n",
++      " 'system_sample': 15,\n",
++      " 'system_sample_seconds': 2,\n",
++      " 'table_raise_on_max_row_limit_exceeded': False,\n",
++      " 'timespec': '20230509_173036',\n",
++      " 'tmp_dir': '/home/ubuntu/git/litte_wandb/wandb/run-20230509_173036-None/tmp',\n",
++      " 'username': 'ubuntu',\n",
++      " 'wandb_dir': '/home/ubuntu/git/litte_wandb/wandb/'}\n",
++      "DEBUG:wandb.sdk.internal.system.system_info:System info init\n",
++      "DEBUG:wandb.sdk.internal.system.system_info:System info init done\n",
++      "DEBUG:wandb.sdk.internal.system.system_info:Probing system\n",
++      "DEBUG:wandb.sdk.internal.system.system_info:Probing git\n",
++      "DEBUG:git.cmd:Popen(['git', 'cat-file', '--batch-check'], cwd=/home/ubuntu/git/litte_wandb, universal_newlines=False, shell=None, istream=<valid stream>)\n",
++      "DEBUG:git.cmd:Popen(['git', 'rev-parse', '--show-toplevel'], cwd=/home/ubuntu/git/litte_wandb, universal_newlines=False, shell=None, istream=None)\n",
++      "DEBUG:wandb.sdk.internal.system.system_info:Probing git done\n",
++      "DEBUG:wandb.sdk.internal.system.system_info:Probing system done\n",
++      "DEBUG:little_wandb._main:{'args': None,\n",
++      " 'cuda': None,\n",
++      " 'docker': None,\n",
++      " 'email': '',\n",
++      " 'executable': '/home/ubuntu/git/litte_wandb/venv/bin/python',\n",
++      " 'git': {'commit': 'ebe48bbda2ce92fb624a503d744690a3e6c24745',\n",
++      "         'remote': 'git@gitlab.img.astrazeneca.net:RA/experimental/litte_wandb.git'},\n",
++      " 'heartbeatAt': '2023-05-09T17:30:36.347937',\n",
++      " 'host': 'cgebbe-r6id.img.astrazeneca.net',\n",
++      " 'os': 'Linux-5.19.0-1024-aws-x86_64-with-glibc2.35',\n",
++      " 'program': '<python with no main file>',\n",
++      " 'python': '3.10.6',\n",
++      " 'root': '/home/ubuntu/git/litte_wandb',\n",
++      " 'startedAt': '2023-05-09T17:30:36.344702',\n",
++      " 'state': 'running',\n",
++      " 'username': 'ubuntu'}\n",
++      "DEBUG:wandb.sdk.internal.system.system_info:Saving list of pip packages installed into the current environment\n",
++      "DEBUG:wandb.sdk.internal.system.system_info:Saving pip packages done\n",
++      "DEBUG:wandb.sdk.internal.system.system_info:Saving code\n",
++      "WARNING:wandb.sdk.internal.system.system_info:unable to save code -- program entry not found\n",
++      "DEBUG:wandb.sdk.internal.system.system_info:Saving git patches\n",
++      "DEBUG:git.cmd:Popen(['git', 'rev-parse', '--show-toplevel'], cwd=/home/ubuntu/git/litte_wandb, universal_newlines=False, shell=None, istream=None)\n",
++      "DEBUG:git.cmd:Popen(['git', 'version'], cwd=/home/ubuntu/git/litte_wandb, universal_newlines=False, shell=None, istream=None)\n",
++      "DEBUG:git.cmd:Popen(['git', 'diff', '--cached', '--abbrev=40', '--full-index', '--raw'], cwd=/home/ubuntu/git/litte_wandb, universal_newlines=False, shell=None, istream=None)\n",
++      "DEBUG:git.cmd:Popen(['git', 'diff', '--abbrev=40', '--full-index', '--raw'], cwd=/home/ubuntu/git/litte_wandb, universal_newlines=False, shell=None, istream=None)\n",
++      "DEBUG:git.cmd:Popen(['git', 'merge-base', 'HEAD', '329d464b3ae6404391188999ae41baabbc3dcd99'], cwd=/home/ubuntu/git/litte_wandb, universal_newlines=False, shell=None, istream=None)\n",
++      "DEBUG:wandb.sdk.internal.system.system_info:Saving git patches done\n",
++      "INFO:little_wandb._main:Wrote the following files: \n",
++      "[('wandb-metadata.json', 'now'),\n",
++      " ('diff.patch', 'now'),\n",
++      " ('upstream_diff_329d464b3ae6404391188999ae41baabbc3dcd99.patch', 'now')]\n"
++     ]
++    }
++   ],
++   "source": [
++    "from pathlib import Path\n",
++    "from little_wandb import dump_infos\n",
++    "import logging \n",
++    "\n",
++    "# wandb emits many useful DEBUG messages by default\n",
++    "logging.basicConfig(level=logging.DEBUG) \n",
++    "\n",
++    "logdir=Path().resolve() / \"example_output\"\n",
++    "dump_infos(logdir)"
++   ]
++  },
++  {
++   "cell_type": "code",
++   "execution_count": 10,
++   "metadata": {},
++   "outputs": [
++    {
++     "name": "stdout",
++     "output_type": "stream",
++     "text": [
++      "/home/ubuntu/git/litte_wandb/example_output\n",
++      "/home/ubuntu/git/litte_wandb/example_output/requirements.txt\n",
++      "/home/ubuntu/git/litte_wandb/example_output/wandb-metadata.json\n",
++      "/home/ubuntu/git/litte_wandb/example_output/upstream_diff_329d464b3ae6404391188999ae41baabbc3dcd99.patch\n",
++      "/home/ubuntu/git/litte_wandb/example_output/diff.patch\n"
++     ]
++    }
++   ],
++   "source": [
++    "!find {logdir}"
++   ]
++  }
++ ],
++ "metadata": {
++  "kernelspec": {
++   "display_name": "venv",
++   "language": "python",
++   "name": "python3"
++  },
++  "language_info": {
++   "codemirror_mode": {
++    "name": "ipython",
++    "version": 3
++   },
++   "file_extension": ".py",
++   "mimetype": "text/x-python",
++   "name": "python",
++   "nbconvert_exporter": "python",
++   "pygments_lexer": "ipython3",
++   "version": "3.10.6"
++  },
++  "orig_nbformat": 4
++ },
++ "nbformat": 4,
++ "nbformat_minor": 2
++}
+diff --git a/example_output/diff.patch b/example_output/diff.patch
+new file mode 100644
+index 0000000..8b20c66
+--- /dev/null
++++ b/example_output/diff.patch
+@@ -0,0 +1,1124 @@
++diff --git a/README.md b/README.md
++index 66097da..2bb95e2 100644
++--- a/README.md
+++++ b/README.md
++@@ -2,17 +2,23 @@
++ 
++ Extracts the [automatic logging](https://docs.wandb.ai/guides/track/log#automatically-logged-data) part from the weights and biases library.
++ 
++-## Desired output
+++## How it works
++ 
++-- system info
++-- pip- or conda-environment
++-- git repo including patches
++-- stdin, stdout, stderr ?!
++-- system metrics (?) This is not a snapshot, but rather 
+++Simply call `little_wandb.dump_info()` to track the following information:
++ 
++-## Relevant code
+++- system info (hostname, user, time, OS, python executable, CLI arguments)
+++- pip- or conda-environment (think pip freeze)
+++- git information including diff patches to current local commit *and recent upstream commit*
+++- copy of currently executing file
+++
+++## Improvement ideas
+++
+++- Feature: environment variables !!! Shall we also add such an option upstream?
+++- Problem: If called from a jupyter notebook, it will not copy the executing file.
+++  - root cause: wandb determines the program via `__main__.__file__` which raises an AttributeError in Jupyter
+++  - solution: fix upstream `_get_program` in wandb/sdk/wandb_settings.py
+++- Problem: The diff patch does not include (new) untracked files
+++  - solution: fix upstream `_save_patches` in wandb/sdk/internal/system/system_info.py (`git diff --no-index`?!)
+++- Feature: Track GPU type
+++- Feature: editable installs are not easily tracked. Either raise error or get git information for editably installed libs?
++ 
++-- https://github.com/wandb/wandb/blob/7a7dd30e94e3c27e0af9058248320fe30967157e/wandb/sdk/internal/system/system_info.py#L82
++-  -  this one file does everything!
++-- https://github.com/wandb/wandb/blob/7a7dd30e94e3c27e0af9058248320fe30967157e/wandb/sdk/wandb_init.py#L719
++-- https://github.com/wandb/wandb/blob/7a7dd30e94e3c27e0af9058248320fe30967157e/wandb/sdk/wandb_run.py#L514
++diff --git a/data/code/little_wandb/main.py b/data/code/little_wandb/main.py
++deleted file mode 100644
++index e22e23a..0000000
++--- a/data/code/little_wandb/main.py
+++++ /dev/null
++@@ -1,138 +0,0 @@
++-# %%
++-# setup logging (wandb logs several DEBUG messages)
++-import logging
++-
++-# create a logger object
++-logger = logging.getLogger()
++-
++-# set the logging level to DEBUG
++-logger.setLevel(logging.DEBUG)
++-
++-# create a console handler and set its level to DEBUG
++-console_handler = logging.StreamHandler()
++-console_handler.setLevel(logging.DEBUG)
++-
++-# create a formatter and add it to the console handler
++-formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
++-console_handler.setFormatter(formatter)
++-
++-# add the console handler to the logger
++-logger.addHandler(console_handler)
++-
++-# %%
++-from wandb.sdk.wandb_init import _WandbInit
++-from wandb.sdk.wandb_settings import Settings
++-
++-settings = Settings(
++-    **dict(
++-        _offline=True,
++-    )
++-)
++-settings
++-
++-
++-# %%
++-import wandb
++-from pprint import pprint
++-
++-REPO_DIR = Path(__file__).parents[1]
++-DATA_DIR = REPO_DIR / "data"
++-
++-
++-settings = wandb.setup().settings
++-settings._set_run_start_time()
++-settings.update(
++-    {
++-        "_offline": True,
++-        "save_code": True,
++-        "files_dir": DATA_DIR,
++-    }
++-)
++-
++-dct = settings.make_static()
++-pprint(dct)
++-static_settings = SettingsStatic(dct)
++-static_settings
++-
++-
++-# %%
++-from pathlib import Path
++-from system_info import SystemInfo, SettingsStatic, Interface
++-
++-
++-class Writer(Interface):
++-    def __init__(self, outdir: Path) -> None:
++-        super().__init__()
++-        self.outdir = outdir
++-
++-    def publish_stats(self, stats: dict) -> None:
++-        raise NotImplementedError
++-
++-    def _publish_telemetry(self, telemetry: "TelemetryRecord") -> None:
++-        raise NotImplementedError
++-
++-    def publish_files(self, files_dict: "FilesDict") -> None:
++-        # List of files t
++-        print(files_dict)
++-
++-
++-import time
++-
++-# d = dict(
++-#     git_root=None,
++-#     git_remote=None,
++-#     git_remote_url=None,
++-#     git_commit=None,
++-#     files_dir=DATA_DIR,
++-#     program_relpath=None,
++-#     disable_git=False,
++-#     _os=None,
++-#     _python=None,
++-#     _start_time=time.time(),
++-#     docker=None,
++-#     _cuda=None,
++-#     _args=None,
++-#     disable_code=False,
++-#     _jupyter=None,
++-#     notebook_name=None,
++-#     _jupyter_path=None,
++-#     _jupyter_name=None,
++-#     _jupyter_root=None,
++-#     anonymous=None,
++-#     host=None,
++-#     username=None,
++-#     _save_requirements=None,
++-#     save_code=None,
++-#     program=None,
++-# )
++-# settings = SettingsStatic(d)
++-writer = Writer(DATA_DIR)
++-info = SystemInfo(static_settings, writer)
++-# info.publish()
++-probed = info.probe()
++-probed
++-
++-# %%
++-
++-"""
++-Does info.probe() add new information? It adds
++-- heartbeat 
++-- state = running
++-- codePath (= relative path of program)
++-- git remote and commit -> I likely get this via _save_git, or?!
++-- root (= base path of program)
++-"""
++-
++-import pandas as pd
++-
++-lst = []
++-for k, v in probed.items():
++-    v2 = dct.get(k)
++-    v3 = dct.get("_" + k)
++-    lst.append({"key": k, "probed": v, "org": v2, "_org": v3})
++-
++-pd.DataFrame(lst)
++-
++-# %%
++-
++-info.publish(probed)
++diff --git a/data/diff.patch b/data/diff.patch
++deleted file mode 100644
++index c9f5d90..0000000
++--- a/data/diff.patch
+++++ /dev/null
++@@ -1,273 +0,0 @@
++-diff --git a/little_wandb/system_info.py b/little_wandb/system_info.py
++-index e69de29..a7ef2f5 100644
++---- a/little_wandb/system_info.py
++-+++ b/little_wandb/system_info.py
++-@@ -0,0 +1,268 @@
++-+# Information about the system and the environment
++-+import datetime
++-+import glob
++-+import json
++-+import logging
++-+import os
++-+import subprocess
++-+import sys
++-+from shutil import copyfile
++-+from typing import Any, Dict, List, Optional
++-+from urllib.parse import unquote
++-+
++-+from wandb.sdk.internal.settings_static import SettingsStatic
++-+from wandb.sdk.lib import filesystem
++-+from wandb.sdk.lib.filenames import (
++-+    CONDA_ENVIRONMENTS_FNAME,
++-+    DIFF_FNAME,
++-+    METADATA_FNAME,
++-+    REQUIREMENTS_FNAME,
++-+)
++-+from wandb.sdk.lib.git import GitRepo
++-+
++-+from wandb.sdk.internal.system.assets.interfaces import Interface
++-+
++-+logger = logging.getLogger(__name__)
++-+
++-+
++-+class SystemInfo:
++-+    # todo: this is mostly a copy of the legacy Meta class, but it should be refactored
++-+    def __init__(self, settings: SettingsStatic, interface: Interface) -> None:
++-+        logger.debug("System info init")
++-+        self.settings = settings
++-+
++-+        self.metadata_file_name = os.path.join(self.settings.files_dir, METADATA_FNAME)
++-+        self.backend_interface = interface
++-+        self.git = GitRepo(
++-+            root=self.settings.git_root,
++-+            remote=self.settings.git_remote,  # type: ignore
++-+            remote_url=self.settings.git_remote_url,
++-+            commit=self.settings.git_commit,
++-+        )
++-+        # Location under "code" directory in files where program was saved.
++-+        self.saved_program: Optional[os.PathLike] = None
++-+        # Locations under files directory where diff patches were saved.
++-+        self.saved_patches: List[str] = []
++-+        logger.debug("System info init done")
++-+
++-+    # todo: refactor these _save_* methods
++-+    def _save_pip(self) -> None:
++-+        """Save the current working set of pip packages to {REQUIREMENTS_FNAME}."""
++-+        logger.debug(
++-+            "Saving list of pip packages installed into the current environment"
++-+        )
++-+        try:
++-+            import pkg_resources
++-+
++-+            installed_packages = [d for d in iter(pkg_resources.working_set)]
++-+            installed_packages_list = sorted(
++-+                f"{i.key}=={i.version}" for i in installed_packages
++-+            )
++-+            with open(
++-+                os.path.join(self.settings.files_dir, REQUIREMENTS_FNAME), "w"
++-+            ) as f:
++-+                f.write("\n".join(installed_packages_list))
++-+        except Exception as e:
++-+            logger.exception(f"Error saving pip packages: {e}")
++-+        logger.debug("Saving pip packages done")
++-+
++-+    def _save_conda(self) -> None:
++-+        current_shell_is_conda = os.path.exists(os.path.join(sys.prefix, "conda-meta"))
++-+        if not current_shell_is_conda:
++-+            return None
++-+
++-+        logger.debug(
++-+            "Saving list of conda packages installed into the current environment"
++-+        )
++-+        try:
++-+            with open(
++-+                os.path.join(self.settings.files_dir, CONDA_ENVIRONMENTS_FNAME), "w"
++-+            ) as f:
++-+                subprocess.call(
++-+                    ["conda", "env", "export"], stdout=f, stderr=subprocess.DEVNULL
++-+                )
++-+        except Exception as e:
++-+            logger.exception(f"Error saving conda packages: {e}")
++-+        logger.debug("Saving conda packages done")
++-+
++-+    def _save_code(self) -> None:
++-+        logger.debug("Saving code")
++-+        if self.settings.program_relpath is None:
++-+            logger.warning("unable to save code -- program entry not found")
++-+            return None
++-+
++-+        root: str = self.git.root or os.getcwd()
++-+        program_relative: str = self.settings.program_relpath
++-+        filesystem.mkdir_exists_ok(
++-+            os.path.join(
++-+                self.settings.files_dir, "code", os.path.dirname(program_relative)
++-+            )
++-+        )
++-+        program_absolute = os.path.join(root, program_relative)
++-+        if not os.path.exists(program_absolute):
++-+            logger.warning("unable to save code -- can't find %s" % program_absolute)
++-+            return None
++-+        saved_program = os.path.join(self.settings.files_dir, "code", program_relative)
++-+        self.saved_program = program_relative  # type: ignore
++-+
++-+        if not os.path.exists(saved_program):
++-+            copyfile(program_absolute, saved_program)
++-+        logger.debug("Saving code done")
++-+
++-+    def _save_patches(self) -> None:
++-+        """Save the current state of this repository to one or more patches.
++-+
++-+        Makes one patch against HEAD and another one against the most recent
++-+        commit that occurs in an upstream branch. This way we can be robust
++-+        to history editing as long as the user never does "push -f" to break
++-+        history on an upstream branch.
++-+
++-+        Writes the first patch to <files_dir>/<DIFF_FNAME> and the second to
++-+        <files_dir>/upstream_diff_<commit_id>.patch.
++-+
++-+        """
++-+        if not self.git.enabled:
++-+            return None
++-+
++-+        logger.debug("Saving git patches")
++-+        try:
++-+            root = self.git.root
++-+            diff_args = ["git", "diff"]
++-+            if self.git.has_submodule_diff:
++-+                diff_args.append("--submodule=diff")
++-+
++-+            if self.git.dirty:
++-+                patch_path = os.path.join(self.settings.files_dir, DIFF_FNAME)
++-+                with open(patch_path, "wb") as patch:
++-+                    # we diff against HEAD to ensure we get changes in the index
++-+                    subprocess.check_call(
++-+                        diff_args + ["HEAD"], stdout=patch, cwd=root, timeout=5
++-+                    )
++-+                    self.saved_patches.append(
++-+                        os.path.relpath(patch_path, start=self.settings.files_dir)
++-+                    )
++-+
++-+            upstream_commit = self.git.get_upstream_fork_point()  # type: ignore
++-+            if upstream_commit and upstream_commit != self.git.repo.head.commit:
++-+                sha = upstream_commit.hexsha
++-+                upstream_patch_path = os.path.join(
++-+                    self.settings.files_dir, f"upstream_diff_{sha}.patch"
++-+                )
++-+                with open(upstream_patch_path, "wb") as upstream_patch:
++-+                    subprocess.check_call(
++-+                        diff_args + [sha], stdout=upstream_patch, cwd=root, timeout=5
++-+                    )
++-+                    self.saved_patches.append(
++-+                        os.path.relpath(
++-+                            upstream_patch_path, start=self.settings.files_dir
++-+                        )
++-+                    )
++-+        # TODO: A customer saw `ValueError: Reference at 'refs/remotes/origin/foo'
++-+        #  does not exist` so we now catch ValueError. Catching this error feels
++-+        #  too generic.
++-+        except (
++-+            ValueError,
++-+            subprocess.CalledProcessError,
++-+            subprocess.TimeoutExpired,
++-+        ) as e:
++-+            logger.error("Error generating diff: %s" % e)
++-+        logger.debug("Saving git patches done")
++-+
++-+    def _probe_git(self, data: Dict[str, Any]) -> Dict[str, Any]:
++-+        if self.settings.disable_git:
++-+            return data
++-+
++-+        # in case of manually passing the git repo info, `enabled` would be False,
++-+        # but we still want to save the git repo info
++-+        if not self.git.enabled and self.git.auto:
++-+            return data
++-+
++-+        logger.debug("Probing git")
++-+
++-+        data["git"] = {
++-+            "remote": self.git.remote_url,
++-+            "commit": self.git.last_commit,
++-+        }
++-+        data["email"] = self.git.email
++-+        data["root"] = self.git.root or data.get("root") or os.getcwd()
++-+        logger.debug("Probing git done")
++-+
++-+        return data
++-+
++-+    def probe(self) -> Dict[str, Any]:
++-+        """Probe the system for information about the current environment."""
++-+        # todo: refactor this quality code 🤮🤮🤮🤮🤮
++-+        logger.debug("Probing system")
++-+        data: Dict[str, Any] = dict()
++-+
++-+        data["os"] = self.settings._os
++-+        data["python"] = self.settings._python
++-+        data["heartbeatAt"] = datetime.datetime.utcnow().isoformat()
++-+        data["startedAt"] = datetime.datetime.utcfromtimestamp(
++-+            self.settings._start_time
++-+        ).isoformat()
++-+
++-+        data["docker"] = self.settings.docker
++-+
++-+        data["cuda"] = self.settings._cuda
++-+        data["args"] = self.settings._args
++-+        data["state"] = "running"
++-+
++-+        if self.settings.program is not None:
++-+            data["program"] = self.settings.program
++-+        if not self.settings.disable_code:
++-+            if self.settings.program_relpath is not None:
++-+                data["codePath"] = self.settings.program_relpath
++-+            elif self.settings._jupyter:
++-+                if self.settings.notebook_name:
++-+                    data["program"] = self.settings.notebook_name
++-+                elif self.settings._jupyter_path:
++-+                    if self.settings._jupyter_path.startswith("fileId="):
++-+                        unescaped = unquote(self.settings._jupyter_path)
++-+                        data["colab"] = (
++-+                            "https://colab.research.google.com/notebook#" + unescaped
++-+                        )
++-+                        data["program"] = self.settings._jupyter_name
++-+                    else:
++-+                        data["program"] = self.settings._jupyter_path
++-+                        data["root"] = self.settings._jupyter_root
++-+            # get the git repo info
++-+            data = self._probe_git(data)
++-+
++-+        if self.settings.anonymous != "true":
++-+            data["host"] = self.settings.host
++-+            data["username"] = self.settings.username
++-+            data["executable"] = sys.executable
++-+        else:
++-+            data.pop("email", None)
++-+            data.pop("root", None)
++-+
++-+        logger.debug("Probing system done")
++-+
++-+        return data
++-+
++-+    def publish(self, system_info: dict) -> None:
++-+        # save pip, conda, code patches to disk
++-+        if self.settings._save_requirements:
++-+            self._save_pip()
++-+            self._save_conda()
++-+        if self.settings.save_code:
++-+            self._save_code()
++-+            self._save_patches()
++-+
++-+        # save system_info to disk
++-+        with open(self.metadata_file_name, "w") as f:
++-+            s = json.dumps(system_info, indent=4)
++-+            f.write(s)
++-+            f.write("\n")
++-+        base_name = os.path.basename(self.metadata_file_name)
++-+        files = dict(files=[(base_name, "now")])
++-+
++-+        if self.saved_program:
++-+            saved_program = os.path.join("code", self.saved_program)
++-+            files["files"].append((glob.escape(saved_program), "now"))
++-+        for patch in self.saved_patches:
++-+            files["files"].append((glob.escape(patch), "now"))
++-+
++-+        # publish files to the backend
++-+        self.backend_interface.publish_files(files)  # type: ignore
++diff --git a/example_notebook.ipynb b/example_notebook.ipynb
++new file mode 100644
++index 0000000..a611d25
++--- /dev/null
+++++ b/example_notebook.ipynb
++@@ -0,0 +1,260 @@
+++{
+++ "cells": [
+++  {
+++   "cell_type": "code",
+++   "execution_count": 1,
+++   "metadata": {},
+++   "outputs": [],
+++   "source": [
+++    "%load_ext autoreload\n",
+++    "%autoreload 2"
+++   ]
+++  },
+++  {
+++   "cell_type": "code",
+++   "execution_count": 20,
+++   "metadata": {},
+++   "outputs": [
+++    {
+++     "name": "stderr",
+++     "output_type": "stream",
+++     "text": [
+++      "DEBUG:little_wandb._main:{'_args': None,\n",
+++      " '_async_upload_concurrency_limit': None,\n",
+++      " '_cli_only_mode': None,\n",
+++      " '_colab': False,\n",
+++      " '_config_dict': None,\n",
+++      " '_console': <SettingsConsole.WRAP: 1>,\n",
+++      " '_cuda': None,\n",
+++      " '_disable_meta': None,\n",
+++      " '_disable_service': False,\n",
+++      " '_disable_stats': None,\n",
+++      " '_disable_viewer': None,\n",
+++      " '_except_exit': None,\n",
+++      " '_executable': '/home/ubuntu/git/litte_wandb/venv/bin/python',\n",
+++      " '_extra_http_headers': None,\n",
+++      " '_flow_control_custom': False,\n",
+++      " '_flow_control_disabled': False,\n",
+++      " '_internal_check_process': 8,\n",
+++      " '_internal_queue_timeout': 2,\n",
+++      " '_ipython': False,\n",
+++      " '_jupyter': True,\n",
+++      " '_jupyter_name': None,\n",
+++      " '_jupyter_path': None,\n",
+++      " '_jupyter_root': None,\n",
+++      " '_kaggle': False,\n",
+++      " '_live_policy_rate_limit': None,\n",
+++      " '_live_policy_wait_time': None,\n",
+++      " '_log_level': None,\n",
+++      " '_network_buffer': None,\n",
+++      " '_noop': False,\n",
+++      " '_notebook': True,\n",
+++      " '_offline': False,\n",
+++      " '_os': 'Linux-5.19.0-1024-aws-x86_64-with-glibc2.35',\n",
+++      " '_platform': 'linux',\n",
+++      " '_python': '3.10.6',\n",
+++      " '_runqueue_item_id': None,\n",
+++      " '_save_requirements': True,\n",
+++      " '_service_transport': None,\n",
+++      " '_service_wait': 30.0,\n",
+++      " '_start_datetime': datetime.datetime(2023, 5, 9, 17, 30, 36, 344702),\n",
+++      " '_start_time': 1683653436.3447022,\n",
+++      " '_stats_join_assets': True,\n",
+++      " '_stats_neuron_monitor_config_path': None,\n",
+++      " '_stats_open_metrics_endpoints': None,\n",
+++      " '_stats_open_metrics_filters': ('.*',),\n",
+++      " '_stats_pid': 3916455,\n",
+++      " '_stats_sample_rate_seconds': 2.0,\n",
+++      " '_stats_samples_to_average': 15,\n",
+++      " '_sync': False,\n",
+++      " '_tmp_code_dir': '/home/ubuntu/git/litte_wandb/wandb/run-20230509_173036-None/tmp/code',\n",
+++      " '_tracelog': None,\n",
+++      " '_unsaved_keys': None,\n",
+++      " '_windows': False,\n",
+++      " 'allow_val_change': None,\n",
+++      " 'anonymous': None,\n",
+++      " 'api_key': None,\n",
+++      " 'base_url': 'https://api.wandb.ai',\n",
+++      " 'code_dir': None,\n",
+++      " 'config_paths': None,\n",
+++      " 'console': 'auto',\n",
+++      " 'deployment': 'cloud',\n",
+++      " 'disable_code': None,\n",
+++      " 'disable_git': False,\n",
+++      " 'disable_hints': None,\n",
+++      " 'disable_job_creation': False,\n",
+++      " 'disabled': False,\n",
+++      " 'docker': None,\n",
+++      " 'email': None,\n",
+++      " 'entity': None,\n",
+++      " 'files_dir': '/home/ubuntu/git/litte_wandb/example_output',\n",
+++      " 'force': None,\n",
+++      " 'git_commit': None,\n",
+++      " 'git_remote': 'origin',\n",
+++      " 'git_remote_url': None,\n",
+++      " 'git_root': None,\n",
+++      " 'heartbeat_seconds': 30,\n",
+++      " 'host': 'cgebbe-r6id.img.astrazeneca.net',\n",
+++      " 'ignore_globs': (),\n",
+++      " 'init_timeout': 60.0,\n",
+++      " 'is_local': False,\n",
+++      " 'label_disable': None,\n",
+++      " 'launch': None,\n",
+++      " 'launch_config_path': None,\n",
+++      " 'log_dir': '/home/ubuntu/git/litte_wandb/wandb/run-20230509_173036-None/logs',\n",
+++      " 'log_internal': '/home/ubuntu/git/litte_wandb/wandb/run-20230509_173036-None/logs/debug-internal.log',\n",
+++      " 'log_symlink_internal': '/home/ubuntu/git/litte_wandb/wandb/debug-internal.log',\n",
+++      " 'log_symlink_user': '/home/ubuntu/git/litte_wandb/wandb/debug.log',\n",
+++      " 'log_user': '/home/ubuntu/git/litte_wandb/wandb/run-20230509_173036-None/logs/debug.log',\n",
+++      " 'login_timeout': None,\n",
+++      " 'magic': None,\n",
+++      " 'mode': 'online',\n",
+++      " 'notebook_name': None,\n",
+++      " 'problem': 'fatal',\n",
+++      " 'program': '<python with no main file>',\n",
+++      " 'program_relpath': None,\n",
+++      " 'project': None,\n",
+++      " 'project_url': '',\n",
+++      " 'quiet': None,\n",
+++      " 'reinit': None,\n",
+++      " 'relogin': None,\n",
+++      " 'resume': None,\n",
+++      " 'resume_fname': '/home/ubuntu/git/litte_wandb/wandb/wandb-resume.json',\n",
+++      " 'resumed': False,\n",
+++      " 'root_dir': '/home/ubuntu/git/litte_wandb',\n",
+++      " 'run_group': None,\n",
+++      " 'run_id': None,\n",
+++      " 'run_job_type': None,\n",
+++      " 'run_mode': 'run',\n",
+++      " 'run_name': None,\n",
+++      " 'run_notes': None,\n",
+++      " 'run_tags': None,\n",
+++      " 'run_url': '',\n",
+++      " 'sagemaker_disable': None,\n",
+++      " 'save_code': True,\n",
+++      " 'settings_system': '/home/ubuntu/.config/wandb/settings',\n",
+++      " 'settings_workspace': '/home/ubuntu/git/litte_wandb/wandb/settings',\n",
+++      " 'show_colors': None,\n",
+++      " 'show_emoji': None,\n",
+++      " 'show_errors': True,\n",
+++      " 'show_info': True,\n",
+++      " 'show_warnings': True,\n",
+++      " 'silent': False,\n",
+++      " 'start_method': None,\n",
+++      " 'strict': None,\n",
+++      " 'summary_errors': None,\n",
+++      " 'summary_timeout': 60,\n",
+++      " 'summary_warnings': 5,\n",
+++      " 'sweep_id': None,\n",
+++      " 'sweep_param_path': None,\n",
+++      " 'sweep_url': '',\n",
+++      " 'symlink': True,\n",
+++      " 'sync_dir': '/home/ubuntu/git/litte_wandb/wandb/run-20230509_173036-None',\n",
+++      " 'sync_file': '/home/ubuntu/git/litte_wandb/wandb/run-20230509_173036-None/run-None.wandb',\n",
+++      " 'sync_symlink_latest': '/home/ubuntu/git/litte_wandb/wandb/latest-run',\n",
+++      " 'system_sample': 15,\n",
+++      " 'system_sample_seconds': 2,\n",
+++      " 'table_raise_on_max_row_limit_exceeded': False,\n",
+++      " 'timespec': '20230509_173036',\n",
+++      " 'tmp_dir': '/home/ubuntu/git/litte_wandb/wandb/run-20230509_173036-None/tmp',\n",
+++      " 'username': 'ubuntu',\n",
+++      " 'wandb_dir': '/home/ubuntu/git/litte_wandb/wandb/'}\n",
+++      "DEBUG:wandb.sdk.internal.system.system_info:System info init\n",
+++      "DEBUG:wandb.sdk.internal.system.system_info:System info init done\n",
+++      "DEBUG:wandb.sdk.internal.system.system_info:Probing system\n",
+++      "DEBUG:wandb.sdk.internal.system.system_info:Probing git\n",
+++      "DEBUG:git.cmd:Popen(['git', 'cat-file', '--batch-check'], cwd=/home/ubuntu/git/litte_wandb, universal_newlines=False, shell=None, istream=<valid stream>)\n",
+++      "DEBUG:git.cmd:Popen(['git', 'rev-parse', '--show-toplevel'], cwd=/home/ubuntu/git/litte_wandb, universal_newlines=False, shell=None, istream=None)\n",
+++      "DEBUG:wandb.sdk.internal.system.system_info:Probing git done\n",
+++      "DEBUG:wandb.sdk.internal.system.system_info:Probing system done\n",
+++      "DEBUG:little_wandb._main:{'args': None,\n",
+++      " 'cuda': None,\n",
+++      " 'docker': None,\n",
+++      " 'email': '',\n",
+++      " 'executable': '/home/ubuntu/git/litte_wandb/venv/bin/python',\n",
+++      " 'git': {'commit': 'ebe48bbda2ce92fb624a503d744690a3e6c24745',\n",
+++      "         'remote': 'git@gitlab.img.astrazeneca.net:RA/experimental/litte_wandb.git'},\n",
+++      " 'heartbeatAt': '2023-05-09T17:30:36.347937',\n",
+++      " 'host': 'cgebbe-r6id.img.astrazeneca.net',\n",
+++      " 'os': 'Linux-5.19.0-1024-aws-x86_64-with-glibc2.35',\n",
+++      " 'program': '<python with no main file>',\n",
+++      " 'python': '3.10.6',\n",
+++      " 'root': '/home/ubuntu/git/litte_wandb',\n",
+++      " 'startedAt': '2023-05-09T17:30:36.344702',\n",
+++      " 'state': 'running',\n",
+++      " 'username': 'ubuntu'}\n",
+++      "DEBUG:wandb.sdk.internal.system.system_info:Saving list of pip packages installed into the current environment\n",
+++      "DEBUG:wandb.sdk.internal.system.system_info:Saving pip packages done\n",
+++      "DEBUG:wandb.sdk.internal.system.system_info:Saving code\n",
+++      "WARNING:wandb.sdk.internal.system.system_info:unable to save code -- program entry not found\n",
+++      "DEBUG:wandb.sdk.internal.system.system_info:Saving git patches\n",
+++      "DEBUG:git.cmd:Popen(['git', 'rev-parse', '--show-toplevel'], cwd=/home/ubuntu/git/litte_wandb, universal_newlines=False, shell=None, istream=None)\n",
+++      "DEBUG:git.cmd:Popen(['git', 'version'], cwd=/home/ubuntu/git/litte_wandb, universal_newlines=False, shell=None, istream=None)\n",
+++      "DEBUG:git.cmd:Popen(['git', 'diff', '--cached', '--abbrev=40', '--full-index', '--raw'], cwd=/home/ubuntu/git/litte_wandb, universal_newlines=False, shell=None, istream=None)\n",
+++      "DEBUG:git.cmd:Popen(['git', 'diff', '--abbrev=40', '--full-index', '--raw'], cwd=/home/ubuntu/git/litte_wandb, universal_newlines=False, shell=None, istream=None)\n",
+++      "DEBUG:git.cmd:Popen(['git', 'merge-base', 'HEAD', '329d464b3ae6404391188999ae41baabbc3dcd99'], cwd=/home/ubuntu/git/litte_wandb, universal_newlines=False, shell=None, istream=None)\n",
+++      "DEBUG:wandb.sdk.internal.system.system_info:Saving git patches done\n",
+++      "INFO:little_wandb._main:Wrote the following files: \n",
+++      "[('wandb-metadata.json', 'now'),\n",
+++      " ('diff.patch', 'now'),\n",
+++      " ('upstream_diff_329d464b3ae6404391188999ae41baabbc3dcd99.patch', 'now')]\n"
+++     ]
+++    }
+++   ],
+++   "source": [
+++    "from pathlib import Path\n",
+++    "from little_wandb import dump_infos\n",
+++    "import logging \n",
+++    "\n",
+++    "# wandb emits many useful DEBUG messages by default\n",
+++    "logging.basicConfig(level=logging.DEBUG) \n",
+++    "\n",
+++    "logdir=Path().resolve() / \"example_output\"\n",
+++    "dump_infos(logdir)"
+++   ]
+++  },
+++  {
+++   "cell_type": "code",
+++   "execution_count": 10,
+++   "metadata": {},
+++   "outputs": [
+++    {
+++     "name": "stdout",
+++     "output_type": "stream",
+++     "text": [
+++      "/home/ubuntu/git/litte_wandb/example_output\n",
+++      "/home/ubuntu/git/litte_wandb/example_output/requirements.txt\n",
+++      "/home/ubuntu/git/litte_wandb/example_output/wandb-metadata.json\n",
+++      "/home/ubuntu/git/litte_wandb/example_output/upstream_diff_329d464b3ae6404391188999ae41baabbc3dcd99.patch\n",
+++      "/home/ubuntu/git/litte_wandb/example_output/diff.patch\n"
+++     ]
+++    }
+++   ],
+++   "source": [
+++    "!find {logdir}"
+++   ]
+++  }
+++ ],
+++ "metadata": {
+++  "kernelspec": {
+++   "display_name": "venv",
+++   "language": "python",
+++   "name": "python3"
+++  },
+++  "language_info": {
+++   "codemirror_mode": {
+++    "name": "ipython",
+++    "version": 3
+++   },
+++   "file_extension": ".py",
+++   "mimetype": "text/x-python",
+++   "name": "python",
+++   "nbconvert_exporter": "python",
+++   "pygments_lexer": "ipython3",
+++   "version": "3.10.6"
+++  },
+++  "orig_nbformat": 4
+++ },
+++ "nbformat": 4,
+++ "nbformat_minor": 2
+++}
++diff --git a/example_output/diff.patch b/example_output/diff.patch
++new file mode 100644
++index 0000000..5bbfead
++diff --git a/data/requirements.txt b/example_output/requirements.txt
++similarity index 81%
++rename from data/requirements.txt
++rename to example_output/requirements.txt
++index b1ef74d..2c63f75 100644
++--- a/data/requirements.txt
+++++ b/example_output/requirements.txt
++@@ -1,5 +1,7 @@
+++ansiwrap==0.8.4
++ appdirs==1.4.4
++ asttokens==2.2.1
+++attrs==23.1.0
++ backcall==0.2.0
++ build==0.10.0
++ certifi==2023.5.7
++@@ -9,7 +11,9 @@ comm==0.1.3
++ debugpy==1.6.7
++ decorator==5.1.1
++ docker-pycreds==0.4.0
+++entrypoints==0.4
++ executing==1.2.0
+++fastjsonschema==2.16.3
++ gitdb==4.0.10
++ gitpython==3.1.31
++ idna==3.4
++@@ -17,13 +21,17 @@ invoke==2.1.1
++ ipykernel==6.23.0
++ ipython==8.13.2
++ jedi==0.18.2
+++jsonschema==4.17.3
++ jupyter-client==8.2.0
++ jupyter-core==5.3.0
++ matplotlib-inline==0.1.6
+++nbclient==0.7.4
+++nbformat==5.8.0
++ nest-asyncio==1.5.6
++ numpy==1.24.3
++ packaging==23.1
++ pandas==2.0.1
+++papermill==2.4.0
++ parso==0.8.3
++ pathtools==0.1.2
++ pexpect==4.8.0
++@@ -38,6 +46,7 @@ ptyprocess==0.7.0
++ pure-eval==0.2.2
++ pygments==2.15.1
++ pyproject-hooks==1.0.0
+++pyrsistent==0.19.3
++ python-dateutil==2.8.2
++ pytz==2023.3
++ pyyaml==6.0
++@@ -49,8 +58,11 @@ setuptools==67.7.2
++ six==1.16.0
++ smmap==5.0.0
++ stack-data==0.6.2
+++tenacity==8.2.2
+++textwrap3==0.9.2
++ tomli==2.0.1
++ tornado==6.3.1
+++tqdm==4.65.0
++ traitlets==5.9.0
++ tzdata==2023.3
++ urllib3==1.26.15
++diff --git a/data/upstream_diff_329d464b3ae6404391188999ae41baabbc3dcd99.patch b/example_output/upstream_diff_329d464b3ae6404391188999ae41baabbc3dcd99.patch
++similarity index 95%
++rename from data/upstream_diff_329d464b3ae6404391188999ae41baabbc3dcd99.patch
++rename to example_output/upstream_diff_329d464b3ae6404391188999ae41baabbc3dcd99.patch
++index 1844bb2..7d6677f 100644
++--- a/data/upstream_diff_329d464b3ae6404391188999ae41baabbc3dcd99.patch
+++++ b/example_output/upstream_diff_329d464b3ae6404391188999ae41baabbc3dcd99.patch
++@@ -29,42 +29,47 @@ index 0000000..b5afdd9
++ +SOFTWARE.
++ \ No newline at end of file
++ diff --git a/README.md b/README.md
++-index 93cc13f..66097da 100644
+++index 93cc13f..d124559 100644
++ --- a/README.md
++ +++ b/README.md
++-@@ -1,92 +1,18 @@
+++@@ -1,92 +1,26 @@
++  # litte_wandb
++  
++ -Extracts the automatic logging part from the weights and biases library.
++ +Extracts the [automatic logging](https://docs.wandb.ai/guides/track/log#automatically-logged-data) part from the weights and biases library.
++  
++ -## Getting started
++-+## Desired output
++++## How it works
++  
++ -To make it easy for you to get started with GitLab, here's a list of recommended next steps.
++-+- system info
++-+- pip- or conda-environment
++-+- git repo including patches
++-+- stdin, stdout, stderr ?!
++-+- system metrics (?) This is not a snapshot, but rather 
++++Simply call `little_wandb.dump_info()` to track the following information:
++  
++ -Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
++-+## Relevant code
++++- system info (hostname, user, time, OS)
++++- current pip- or conda-environment
++++- git repo including diff patches to current local commit *and recent upstream commit*
++  
++ -## Add your files
++--
+++ 
++ -- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
++ -- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
++--
+++ 
++ -```
++ -cd existing_repo
++ -git remote add origin https://gitlab.img.astrazeneca.net/RA/experimental/litte_wandb.git
++ -git branch -M master
++ -git push -uf origin master
++ -```
++--
++++## Known limitations
+++ 
++ -## Integrate with your tools
++--
++++- Problem: If called from a jupyter notebook, it will not copy the executing file.
++++  - root cause: wandb determines the program via `__main__.__file__` which raises an AttributeError in Jupyter
++++  - solution: fix upstream `_get_program` in wandb/sdk/wandb_settings.py
++++- Problem: The diff patch does not include (new) untracked files
++++  - solution: fix upstream `_save_patches` in wandb/sdk/internal/system/system_info.py (`git diff --no-index`?!)
++++- does it track 
+++ 
++ -- [ ] [Set up project integrations](https://gitlab.img.astrazeneca.net/RA/experimental/litte_wandb/-/settings/integrations)
++ -
++ -## Collaborate with your team
++@@ -133,10 +138,10 @@ index 93cc13f..66097da 100644
++ -
++ -## Project status
++ -If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
++-+- https://github.com/wandb/wandb/blob/7a7dd30e94e3c27e0af9058248320fe30967157e/wandb/sdk/internal/system/system_info.py#L82
++-+  -  this one file does everything!
++-+- https://github.com/wandb/wandb/blob/7a7dd30e94e3c27e0af9058248320fe30967157e/wandb/sdk/wandb_init.py#L719
++-+- https://github.com/wandb/wandb/blob/7a7dd30e94e3c27e0af9058248320fe30967157e/wandb/sdk/wandb_run.py#L514
++++It does not track stdin, stdout or stderr
++++- Also track stdin, stdout, stderr ?!
++++- system metrics (?) This is not a snapshot, but rather 
+++\ No newline at end of file
++ diff --git a/little_wandb/system_info.py b/little_wandb/system_info.py
++ new file mode 100644
++ index 0000000..a7ef2f5
++diff --git a/data/wandb-metadata.json b/example_output/wandb-metadata.json
++similarity index 50%
++rename from data/wandb-metadata.json
++rename to example_output/wandb-metadata.json
++index aed9dbb..34bc7bd 100644
++--- a/data/wandb-metadata.json
+++++ b/example_output/wandb-metadata.json
++@@ -1,21 +1,24 @@
++ {
++     "os": "Linux-5.19.0-1024-aws-x86_64-with-glibc2.35",
++     "python": "3.10.6",
++-    "heartbeatAt": "2023-05-09T15:43:45.010929",
++-    "startedAt": "2023-05-09T15:43:24.100325",
+++    "heartbeatAt": "2023-05-09T17:42:54.375070",
+++    "startedAt": "2023-05-09T17:42:54.370760",
++     "docker": null,
++     "cuda": null,
++-    "args": null,
+++    "args": [
+++        "-f",
+++        "/tmp/tmpnhb9j856.json",
+++        "--HistoryManager.hist_file=:memory:"
+++    ],
++     "state": "running",
++-    "program": "/home/ubuntu/git/litte_wandb/little_wandb/main.py",
++-    "codePath": "little_wandb/main.py",
+++    "program": "<python with no main file>",
++     "git": {
++         "remote": "git@gitlab.img.astrazeneca.net:RA/experimental/litte_wandb.git",
++-        "commit": "d600a4126cb31d70d4cdd4b5ff455a6ec21adee5"
+++        "commit": "ebe48bbda2ce92fb624a503d744690a3e6c24745"
++     },
++     "email": "",
++     "root": "/home/ubuntu/git/litte_wandb",
++     "host": "cgebbe-r6id.img.astrazeneca.net",
++     "username": "ubuntu",
++-    "executable": "/home/ubuntu/git/litte_wandb/venv/bin/python"
+++    "executable": "/home/ubuntu/git/litte_wandb/venv/bin/python3"
++ }
++diff --git a/little_wandb/__init__.py b/little_wandb/__init__.py
++new file mode 100644
++index 0000000..300107c
++--- /dev/null
+++++ b/little_wandb/__init__.py
++@@ -0,0 +1 @@
+++from ._main import dump_infos
++diff --git a/little_wandb/_main.py b/little_wandb/_main.py
++new file mode 100644
++index 0000000..43fdf13
++--- /dev/null
+++++ b/little_wandb/_main.py
++@@ -0,0 +1,47 @@
+++import wandb
+++import pprint
+++from pathlib import Path
+++from wandb.sdk.internal.system.system_info import SystemInfo, SettingsStatic, Interface
+++import logging
+++
+++_LOGGER = logging.getLogger(__name__)
+++
+++
+++def _get_settings(logdir: Path, track_code: bool) -> SettingsStatic:
+++    settings = wandb.setup().settings
+++    settings._set_run_start_time()
+++    settings.update(
+++        {
+++            "_offline": True,
+++            "save_code": track_code,
+++            "files_dir": logdir,
+++        }
+++    )
+++
+++    dct = settings.make_static()
+++    _LOGGER.debug(pprint.pformat(dct))
+++    return SettingsStatic(dct)
+++
+++
+++class _DummyInterace(Interface):
+++    def publish_stats(self, stats: dict) -> None:
+++        raise NotImplementedError
+++
+++    def _publish_telemetry(self, telemetry: "TelemetryRecord") -> None:
+++        raise NotImplementedError
+++
+++    def publish_files(self, files_dict: "FilesDict") -> None:
+++        s = pprint.pformat(files_dict["files"])
+++        _LOGGER.info(f"Wrote the following files: \n{s}")
+++
+++
+++def dump_infos(logdir: Path, track_code: bool = True):
+++    writer = _DummyInterace()
+++    settings = _get_settings(logdir=logdir, track_code=track_code)
+++    info = SystemInfo(settings, writer)
+++
+++    info_dct = info.probe()
+++    _LOGGER.debug(pprint.pformat(info_dct))
+++
+++    logdir.mkdir(exist_ok=True, parents=True)
+++    info.publish(info_dct)
++diff --git a/little_wandb/main.py b/little_wandb/main.py
++deleted file mode 100644
++index c4d054f..0000000
++--- a/little_wandb/main.py
+++++ /dev/null
++@@ -1,142 +0,0 @@
++-# %%
++-# setup logging (wandb logs several DEBUG messages)
++-import logging
++-
++-logging.basicConfig(level=logging.DEBUG)
++-
++-# create a logger object
++-# logger = logging.getLogger()
++-
++-# set the logging level to DEBUG
++-# logger.setLevel(logging.DEBUG)
++-
++-# # create a console handler and set its level to DEBUG
++-# console_handler = logging.StreamHandler()
++-# console_handler.setLevel(logging.DEBUG)
++-
++-# # create a formatter and add it to the console handler
++-# formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
++-# console_handler.setFormatter(formatter)
++-
++-# # add the console handler to the logger
++-# logger.addHandler(console_handler)
++-
++-# %%
++-from wandb.sdk.wandb_init import _WandbInit
++-from wandb.sdk.wandb_settings import Settings
++-
++-settings = Settings(
++-    **dict(
++-        _offline=True,
++-    )
++-)
++-settings
++-
++-
++-# %%
++-import wandb
++-from pprint import pprint
++-from pathlib import Path
++-from system_info import SystemInfo, SettingsStatic, Interface
++-
++-REPO_DIR = Path(__file__).parents[1]
++-DATA_DIR = REPO_DIR / "data"
++-
++-
++-settings = wandb.setup().settings
++-settings._set_run_start_time()
++-settings.update(
++-    {
++-        "_offline": True,
++-        "save_code": True,
++-        "files_dir": DATA_DIR,
++-    }
++-)
++-
++-dct = settings.make_static()
++-pprint(dct)
++-static_settings = SettingsStatic(dct)
++-static_settings
++-
++-
++-# %%
++-from pathlib import Path
++-from system_info import SystemInfo, SettingsStatic, Interface
++-
++-
++-class Writer(Interface):
++-    def __init__(self, outdir: Path) -> None:
++-        super().__init__()
++-        self.outdir = outdir
++-
++-    def publish_stats(self, stats: dict) -> None:
++-        raise NotImplementedError
++-
++-    def _publish_telemetry(self, telemetry: "TelemetryRecord") -> None:
++-        raise NotImplementedError
++-
++-    def publish_files(self, files_dict: "FilesDict") -> None:
++-        # List of files t
++-        print(files_dict)
++-
++-
++-import time
++-
++-# d = dict(
++-#     git_root=None,
++-#     git_remote=None,
++-#     git_remote_url=None,
++-#     git_commit=None,
++-#     files_dir=DATA_DIR,
++-#     program_relpath=None,
++-#     disable_git=False,
++-#     _os=None,
++-#     _python=None,
++-#     _start_time=time.time(),
++-#     docker=None,
++-#     _cuda=None,
++-#     _args=None,
++-#     disable_code=False,
++-#     _jupyter=None,
++-#     notebook_name=None,
++-#     _jupyter_path=None,
++-#     _jupyter_name=None,
++-#     _jupyter_root=None,
++-#     anonymous=None,
++-#     host=None,
++-#     username=None,
++-#     _save_requirements=None,
++-#     save_code=None,
++-#     program=None,
++-# )
++-# settings = SettingsStatic(d)
++-writer = Writer(DATA_DIR)
++-info = SystemInfo(static_settings, writer)
++-# info.publish()
++-probed = info.probe()
++-probed
++-
++-# %%
++-
++-"""
++-Does info.probe() add new information? It adds
++-- heartbeat 
++-- state = running
++-- codePath (= relative path of program)
++-- git remote and commit -> I likely get this via _save_git, or?!
++-- root (= base path of program)
++-"""
++-
++-import pandas as pd
++-
++-lst = []
++-for k, v in probed.items():
++-    v2 = dct.get(k)
++-    v3 = dct.get("_" + k)
++-    lst.append({"key": k, "probed": v, "org": v2, "_org": v3})
++-
++-pd.DataFrame(lst)
++-
++-# %%
++-
++-info.publish(probed)
+diff --git a/example_output/requirements.txt b/example_output/requirements.txt
+new file mode 100644
+index 0000000..2c63f75
+--- /dev/null
++++ b/example_output/requirements.txt
+@@ -0,0 +1,71 @@
++ansiwrap==0.8.4
++appdirs==1.4.4
++asttokens==2.2.1
++attrs==23.1.0
++backcall==0.2.0
++build==0.10.0
++certifi==2023.5.7
++charset-normalizer==3.1.0
++click==8.1.3
++comm==0.1.3
++debugpy==1.6.7
++decorator==5.1.1
++docker-pycreds==0.4.0
++entrypoints==0.4
++executing==1.2.0
++fastjsonschema==2.16.3
++gitdb==4.0.10
++gitpython==3.1.31
++idna==3.4
++invoke==2.1.1
++ipykernel==6.23.0
++ipython==8.13.2
++jedi==0.18.2
++jsonschema==4.17.3
++jupyter-client==8.2.0
++jupyter-core==5.3.0
++matplotlib-inline==0.1.6
++nbclient==0.7.4
++nbformat==5.8.0
++nest-asyncio==1.5.6
++numpy==1.24.3
++packaging==23.1
++pandas==2.0.1
++papermill==2.4.0
++parso==0.8.3
++pathtools==0.1.2
++pexpect==4.8.0
++pickleshare==0.7.5
++pip-tools==6.13.0
++pip==23.1.2
++platformdirs==3.5.0
++prompt-toolkit==3.0.38
++protobuf==4.23.0
++psutil==5.9.5
++ptyprocess==0.7.0
++pure-eval==0.2.2
++pygments==2.15.1
++pyproject-hooks==1.0.0
++pyrsistent==0.19.3
++python-dateutil==2.8.2
++pytz==2023.3
++pyyaml==6.0
++pyzmq==25.0.2
++requests==2.30.0
++sentry-sdk==1.22.2
++setproctitle==1.3.2
++setuptools==67.7.2
++six==1.16.0
++smmap==5.0.0
++stack-data==0.6.2
++tenacity==8.2.2
++textwrap3==0.9.2
++tomli==2.0.1
++tornado==6.3.1
++tqdm==4.65.0
++traitlets==5.9.0
++tzdata==2023.3
++urllib3==1.26.15
++wandb==0.15.2
++wcwidth==0.2.6
++wheel==0.40.0
+\ No newline at end of file
+diff --git a/example_output/upstream_diff_329d464b3ae6404391188999ae41baabbc3dcd99.patch b/example_output/upstream_diff_329d464b3ae6404391188999ae41baabbc3dcd99.patch
+new file mode 100644
+index 0000000..79bacd1
+--- /dev/null
++++ b/example_output/upstream_diff_329d464b3ae6404391188999ae41baabbc3dcd99.patch
+@@ -0,0 +1,1540 @@
++diff --git a/LICENCE b/LICENCE
++new file mode 100644
++index 0000000..b5afdd9
++--- /dev/null
+++++ b/LICENCE
++@@ -0,0 +1,23 @@
+++# Copied from https://github.com/wandb/wandb/blob/7a7dd30e94e3c27e0af9058248320fe30967157e/LICENSE
+++
+++MIT License
+++
+++Copyright (c) 2021 Weights and Biases, Inc.
+++
+++Permission is hereby granted, free of charge, to any person obtaining a copy
+++of this software and associated documentation files (the "Software"), to deal
+++in the Software without restriction, including without limitation the rights
+++to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+++copies of the Software, and to permit persons to whom the Software is
+++furnished to do so, subject to the following conditions:
+++
+++The above copyright notice and this permission notice shall be included in all
+++copies or substantial portions of the Software.
+++
+++THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+++IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+++FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+++AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+++LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+++OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+++SOFTWARE.
++\ No newline at end of file
++diff --git a/README.md b/README.md
++index 93cc13f..2bb95e2 100644
++--- a/README.md
+++++ b/README.md
++@@ -1,92 +1,24 @@
++ # litte_wandb
++ 
++-Extracts the automatic logging part from the weights and biases library.
+++Extracts the [automatic logging](https://docs.wandb.ai/guides/track/log#automatically-logged-data) part from the weights and biases library.
++ 
++-## Getting started
+++## How it works
++ 
++-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+++Simply call `little_wandb.dump_info()` to track the following information:
++ 
++-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+++- system info (hostname, user, time, OS, python executable, CLI arguments)
+++- pip- or conda-environment (think pip freeze)
+++- git information including diff patches to current local commit *and recent upstream commit*
+++- copy of currently executing file
++ 
++-## Add your files
+++## Improvement ideas
++ 
++-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
++-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+++- Feature: environment variables !!! Shall we also add such an option upstream?
+++- Problem: If called from a jupyter notebook, it will not copy the executing file.
+++  - root cause: wandb determines the program via `__main__.__file__` which raises an AttributeError in Jupyter
+++  - solution: fix upstream `_get_program` in wandb/sdk/wandb_settings.py
+++- Problem: The diff patch does not include (new) untracked files
+++  - solution: fix upstream `_save_patches` in wandb/sdk/internal/system/system_info.py (`git diff --no-index`?!)
+++- Feature: Track GPU type
+++- Feature: editable installs are not easily tracked. Either raise error or get git information for editably installed libs?
++ 
++-```
++-cd existing_repo
++-git remote add origin https://gitlab.img.astrazeneca.net/RA/experimental/litte_wandb.git
++-git branch -M master
++-git push -uf origin master
++-```
++-
++-## Integrate with your tools
++-
++-- [ ] [Set up project integrations](https://gitlab.img.astrazeneca.net/RA/experimental/litte_wandb/-/settings/integrations)
++-
++-## Collaborate with your team
++-
++-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
++-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
++-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
++-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
++-- [ ] [Automatically merge when pipeline succeeds](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
++-
++-## Test and Deploy
++-
++-Use the built-in continuous integration in GitLab.
++-
++-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
++-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
++-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
++-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
++-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
++-
++-***
++-
++-# Editing this README
++-
++-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
++-
++-## Suggestions for a good README
++-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
++-
++-## Name
++-Choose a self-explaining name for your project.
++-
++-## Description
++-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
++-
++-## Badges
++-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
++-
++-## Visuals
++-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
++-
++-## Installation
++-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
++-
++-## Usage
++-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
++-
++-## Support
++-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
++-
++-## Roadmap
++-If you have ideas for releases in the future, it is a good idea to list them in the README.
++-
++-## Contributing
++-State if you are open to contributions and what your requirements are for accepting them.
++-
++-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
++-
++-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
++-
++-## Authors and acknowledgment
++-Show your appreciation to those who have contributed to the project.
++-
++-## License
++-For open source projects, say how it is licensed.
++-
++-## Project status
++-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
++diff --git a/example_notebook.ipynb b/example_notebook.ipynb
++new file mode 100644
++index 0000000..a611d25
++--- /dev/null
+++++ b/example_notebook.ipynb
++@@ -0,0 +1,260 @@
+++{
+++ "cells": [
+++  {
+++   "cell_type": "code",
+++   "execution_count": 1,
+++   "metadata": {},
+++   "outputs": [],
+++   "source": [
+++    "%load_ext autoreload\n",
+++    "%autoreload 2"
+++   ]
+++  },
+++  {
+++   "cell_type": "code",
+++   "execution_count": 20,
+++   "metadata": {},
+++   "outputs": [
+++    {
+++     "name": "stderr",
+++     "output_type": "stream",
+++     "text": [
+++      "DEBUG:little_wandb._main:{'_args': None,\n",
+++      " '_async_upload_concurrency_limit': None,\n",
+++      " '_cli_only_mode': None,\n",
+++      " '_colab': False,\n",
+++      " '_config_dict': None,\n",
+++      " '_console': <SettingsConsole.WRAP: 1>,\n",
+++      " '_cuda': None,\n",
+++      " '_disable_meta': None,\n",
+++      " '_disable_service': False,\n",
+++      " '_disable_stats': None,\n",
+++      " '_disable_viewer': None,\n",
+++      " '_except_exit': None,\n",
+++      " '_executable': '/home/ubuntu/git/litte_wandb/venv/bin/python',\n",
+++      " '_extra_http_headers': None,\n",
+++      " '_flow_control_custom': False,\n",
+++      " '_flow_control_disabled': False,\n",
+++      " '_internal_check_process': 8,\n",
+++      " '_internal_queue_timeout': 2,\n",
+++      " '_ipython': False,\n",
+++      " '_jupyter': True,\n",
+++      " '_jupyter_name': None,\n",
+++      " '_jupyter_path': None,\n",
+++      " '_jupyter_root': None,\n",
+++      " '_kaggle': False,\n",
+++      " '_live_policy_rate_limit': None,\n",
+++      " '_live_policy_wait_time': None,\n",
+++      " '_log_level': None,\n",
+++      " '_network_buffer': None,\n",
+++      " '_noop': False,\n",
+++      " '_notebook': True,\n",
+++      " '_offline': False,\n",
+++      " '_os': 'Linux-5.19.0-1024-aws-x86_64-with-glibc2.35',\n",
+++      " '_platform': 'linux',\n",
+++      " '_python': '3.10.6',\n",
+++      " '_runqueue_item_id': None,\n",
+++      " '_save_requirements': True,\n",
+++      " '_service_transport': None,\n",
+++      " '_service_wait': 30.0,\n",
+++      " '_start_datetime': datetime.datetime(2023, 5, 9, 17, 30, 36, 344702),\n",
+++      " '_start_time': 1683653436.3447022,\n",
+++      " '_stats_join_assets': True,\n",
+++      " '_stats_neuron_monitor_config_path': None,\n",
+++      " '_stats_open_metrics_endpoints': None,\n",
+++      " '_stats_open_metrics_filters': ('.*',),\n",
+++      " '_stats_pid': 3916455,\n",
+++      " '_stats_sample_rate_seconds': 2.0,\n",
+++      " '_stats_samples_to_average': 15,\n",
+++      " '_sync': False,\n",
+++      " '_tmp_code_dir': '/home/ubuntu/git/litte_wandb/wandb/run-20230509_173036-None/tmp/code',\n",
+++      " '_tracelog': None,\n",
+++      " '_unsaved_keys': None,\n",
+++      " '_windows': False,\n",
+++      " 'allow_val_change': None,\n",
+++      " 'anonymous': None,\n",
+++      " 'api_key': None,\n",
+++      " 'base_url': 'https://api.wandb.ai',\n",
+++      " 'code_dir': None,\n",
+++      " 'config_paths': None,\n",
+++      " 'console': 'auto',\n",
+++      " 'deployment': 'cloud',\n",
+++      " 'disable_code': None,\n",
+++      " 'disable_git': False,\n",
+++      " 'disable_hints': None,\n",
+++      " 'disable_job_creation': False,\n",
+++      " 'disabled': False,\n",
+++      " 'docker': None,\n",
+++      " 'email': None,\n",
+++      " 'entity': None,\n",
+++      " 'files_dir': '/home/ubuntu/git/litte_wandb/example_output',\n",
+++      " 'force': None,\n",
+++      " 'git_commit': None,\n",
+++      " 'git_remote': 'origin',\n",
+++      " 'git_remote_url': None,\n",
+++      " 'git_root': None,\n",
+++      " 'heartbeat_seconds': 30,\n",
+++      " 'host': 'cgebbe-r6id.img.astrazeneca.net',\n",
+++      " 'ignore_globs': (),\n",
+++      " 'init_timeout': 60.0,\n",
+++      " 'is_local': False,\n",
+++      " 'label_disable': None,\n",
+++      " 'launch': None,\n",
+++      " 'launch_config_path': None,\n",
+++      " 'log_dir': '/home/ubuntu/git/litte_wandb/wandb/run-20230509_173036-None/logs',\n",
+++      " 'log_internal': '/home/ubuntu/git/litte_wandb/wandb/run-20230509_173036-None/logs/debug-internal.log',\n",
+++      " 'log_symlink_internal': '/home/ubuntu/git/litte_wandb/wandb/debug-internal.log',\n",
+++      " 'log_symlink_user': '/home/ubuntu/git/litte_wandb/wandb/debug.log',\n",
+++      " 'log_user': '/home/ubuntu/git/litte_wandb/wandb/run-20230509_173036-None/logs/debug.log',\n",
+++      " 'login_timeout': None,\n",
+++      " 'magic': None,\n",
+++      " 'mode': 'online',\n",
+++      " 'notebook_name': None,\n",
+++      " 'problem': 'fatal',\n",
+++      " 'program': '<python with no main file>',\n",
+++      " 'program_relpath': None,\n",
+++      " 'project': None,\n",
+++      " 'project_url': '',\n",
+++      " 'quiet': None,\n",
+++      " 'reinit': None,\n",
+++      " 'relogin': None,\n",
+++      " 'resume': None,\n",
+++      " 'resume_fname': '/home/ubuntu/git/litte_wandb/wandb/wandb-resume.json',\n",
+++      " 'resumed': False,\n",
+++      " 'root_dir': '/home/ubuntu/git/litte_wandb',\n",
+++      " 'run_group': None,\n",
+++      " 'run_id': None,\n",
+++      " 'run_job_type': None,\n",
+++      " 'run_mode': 'run',\n",
+++      " 'run_name': None,\n",
+++      " 'run_notes': None,\n",
+++      " 'run_tags': None,\n",
+++      " 'run_url': '',\n",
+++      " 'sagemaker_disable': None,\n",
+++      " 'save_code': True,\n",
+++      " 'settings_system': '/home/ubuntu/.config/wandb/settings',\n",
+++      " 'settings_workspace': '/home/ubuntu/git/litte_wandb/wandb/settings',\n",
+++      " 'show_colors': None,\n",
+++      " 'show_emoji': None,\n",
+++      " 'show_errors': True,\n",
+++      " 'show_info': True,\n",
+++      " 'show_warnings': True,\n",
+++      " 'silent': False,\n",
+++      " 'start_method': None,\n",
+++      " 'strict': None,\n",
+++      " 'summary_errors': None,\n",
+++      " 'summary_timeout': 60,\n",
+++      " 'summary_warnings': 5,\n",
+++      " 'sweep_id': None,\n",
+++      " 'sweep_param_path': None,\n",
+++      " 'sweep_url': '',\n",
+++      " 'symlink': True,\n",
+++      " 'sync_dir': '/home/ubuntu/git/litte_wandb/wandb/run-20230509_173036-None',\n",
+++      " 'sync_file': '/home/ubuntu/git/litte_wandb/wandb/run-20230509_173036-None/run-None.wandb',\n",
+++      " 'sync_symlink_latest': '/home/ubuntu/git/litte_wandb/wandb/latest-run',\n",
+++      " 'system_sample': 15,\n",
+++      " 'system_sample_seconds': 2,\n",
+++      " 'table_raise_on_max_row_limit_exceeded': False,\n",
+++      " 'timespec': '20230509_173036',\n",
+++      " 'tmp_dir': '/home/ubuntu/git/litte_wandb/wandb/run-20230509_173036-None/tmp',\n",
+++      " 'username': 'ubuntu',\n",
+++      " 'wandb_dir': '/home/ubuntu/git/litte_wandb/wandb/'}\n",
+++      "DEBUG:wandb.sdk.internal.system.system_info:System info init\n",
+++      "DEBUG:wandb.sdk.internal.system.system_info:System info init done\n",
+++      "DEBUG:wandb.sdk.internal.system.system_info:Probing system\n",
+++      "DEBUG:wandb.sdk.internal.system.system_info:Probing git\n",
+++      "DEBUG:git.cmd:Popen(['git', 'cat-file', '--batch-check'], cwd=/home/ubuntu/git/litte_wandb, universal_newlines=False, shell=None, istream=<valid stream>)\n",
+++      "DEBUG:git.cmd:Popen(['git', 'rev-parse', '--show-toplevel'], cwd=/home/ubuntu/git/litte_wandb, universal_newlines=False, shell=None, istream=None)\n",
+++      "DEBUG:wandb.sdk.internal.system.system_info:Probing git done\n",
+++      "DEBUG:wandb.sdk.internal.system.system_info:Probing system done\n",
+++      "DEBUG:little_wandb._main:{'args': None,\n",
+++      " 'cuda': None,\n",
+++      " 'docker': None,\n",
+++      " 'email': '',\n",
+++      " 'executable': '/home/ubuntu/git/litte_wandb/venv/bin/python',\n",
+++      " 'git': {'commit': 'ebe48bbda2ce92fb624a503d744690a3e6c24745',\n",
+++      "         'remote': 'git@gitlab.img.astrazeneca.net:RA/experimental/litte_wandb.git'},\n",
+++      " 'heartbeatAt': '2023-05-09T17:30:36.347937',\n",
+++      " 'host': 'cgebbe-r6id.img.astrazeneca.net',\n",
+++      " 'os': 'Linux-5.19.0-1024-aws-x86_64-with-glibc2.35',\n",
+++      " 'program': '<python with no main file>',\n",
+++      " 'python': '3.10.6',\n",
+++      " 'root': '/home/ubuntu/git/litte_wandb',\n",
+++      " 'startedAt': '2023-05-09T17:30:36.344702',\n",
+++      " 'state': 'running',\n",
+++      " 'username': 'ubuntu'}\n",
+++      "DEBUG:wandb.sdk.internal.system.system_info:Saving list of pip packages installed into the current environment\n",
+++      "DEBUG:wandb.sdk.internal.system.system_info:Saving pip packages done\n",
+++      "DEBUG:wandb.sdk.internal.system.system_info:Saving code\n",
+++      "WARNING:wandb.sdk.internal.system.system_info:unable to save code -- program entry not found\n",
+++      "DEBUG:wandb.sdk.internal.system.system_info:Saving git patches\n",
+++      "DEBUG:git.cmd:Popen(['git', 'rev-parse', '--show-toplevel'], cwd=/home/ubuntu/git/litte_wandb, universal_newlines=False, shell=None, istream=None)\n",
+++      "DEBUG:git.cmd:Popen(['git', 'version'], cwd=/home/ubuntu/git/litte_wandb, universal_newlines=False, shell=None, istream=None)\n",
+++      "DEBUG:git.cmd:Popen(['git', 'diff', '--cached', '--abbrev=40', '--full-index', '--raw'], cwd=/home/ubuntu/git/litte_wandb, universal_newlines=False, shell=None, istream=None)\n",
+++      "DEBUG:git.cmd:Popen(['git', 'diff', '--abbrev=40', '--full-index', '--raw'], cwd=/home/ubuntu/git/litte_wandb, universal_newlines=False, shell=None, istream=None)\n",
+++      "DEBUG:git.cmd:Popen(['git', 'merge-base', 'HEAD', '329d464b3ae6404391188999ae41baabbc3dcd99'], cwd=/home/ubuntu/git/litte_wandb, universal_newlines=False, shell=None, istream=None)\n",
+++      "DEBUG:wandb.sdk.internal.system.system_info:Saving git patches done\n",
+++      "INFO:little_wandb._main:Wrote the following files: \n",
+++      "[('wandb-metadata.json', 'now'),\n",
+++      " ('diff.patch', 'now'),\n",
+++      " ('upstream_diff_329d464b3ae6404391188999ae41baabbc3dcd99.patch', 'now')]\n"
+++     ]
+++    }
+++   ],
+++   "source": [
+++    "from pathlib import Path\n",
+++    "from little_wandb import dump_infos\n",
+++    "import logging \n",
+++    "\n",
+++    "# wandb emits many useful DEBUG messages by default\n",
+++    "logging.basicConfig(level=logging.DEBUG) \n",
+++    "\n",
+++    "logdir=Path().resolve() / \"example_output\"\n",
+++    "dump_infos(logdir)"
+++   ]
+++  },
+++  {
+++   "cell_type": "code",
+++   "execution_count": 10,
+++   "metadata": {},
+++   "outputs": [
+++    {
+++     "name": "stdout",
+++     "output_type": "stream",
+++     "text": [
+++      "/home/ubuntu/git/litte_wandb/example_output\n",
+++      "/home/ubuntu/git/litte_wandb/example_output/requirements.txt\n",
+++      "/home/ubuntu/git/litte_wandb/example_output/wandb-metadata.json\n",
+++      "/home/ubuntu/git/litte_wandb/example_output/upstream_diff_329d464b3ae6404391188999ae41baabbc3dcd99.patch\n",
+++      "/home/ubuntu/git/litte_wandb/example_output/diff.patch\n"
+++     ]
+++    }
+++   ],
+++   "source": [
+++    "!find {logdir}"
+++   ]
+++  }
+++ ],
+++ "metadata": {
+++  "kernelspec": {
+++   "display_name": "venv",
+++   "language": "python",
+++   "name": "python3"
+++  },
+++  "language_info": {
+++   "codemirror_mode": {
+++    "name": "ipython",
+++    "version": 3
+++   },
+++   "file_extension": ".py",
+++   "mimetype": "text/x-python",
+++   "name": "python",
+++   "nbconvert_exporter": "python",
+++   "pygments_lexer": "ipython3",
+++   "version": "3.10.6"
+++  },
+++  "orig_nbformat": 4
+++ },
+++ "nbformat": 4,
+++ "nbformat_minor": 2
+++}
++diff --git a/example_output/diff.patch b/example_output/diff.patch
++new file mode 100644
++index 0000000..8b20c66
++--- /dev/null
+++++ b/example_output/diff.patch
++@@ -0,0 +1,1124 @@
+++diff --git a/README.md b/README.md
+++index 66097da..2bb95e2 100644
+++--- a/README.md
++++++ b/README.md
+++@@ -2,17 +2,23 @@
+++ 
+++ Extracts the [automatic logging](https://docs.wandb.ai/guides/track/log#automatically-logged-data) part from the weights and biases library.
+++ 
+++-## Desired output
++++## How it works
+++ 
+++-- system info
+++-- pip- or conda-environment
+++-- git repo including patches
+++-- stdin, stdout, stderr ?!
+++-- system metrics (?) This is not a snapshot, but rather 
++++Simply call `little_wandb.dump_info()` to track the following information:
+++ 
+++-## Relevant code
++++- system info (hostname, user, time, OS, python executable, CLI arguments)
++++- pip- or conda-environment (think pip freeze)
++++- git information including diff patches to current local commit *and recent upstream commit*
++++- copy of currently executing file
++++
++++## Improvement ideas
++++
++++- Feature: environment variables !!! Shall we also add such an option upstream?
++++- Problem: If called from a jupyter notebook, it will not copy the executing file.
++++  - root cause: wandb determines the program via `__main__.__file__` which raises an AttributeError in Jupyter
++++  - solution: fix upstream `_get_program` in wandb/sdk/wandb_settings.py
++++- Problem: The diff patch does not include (new) untracked files
++++  - solution: fix upstream `_save_patches` in wandb/sdk/internal/system/system_info.py (`git diff --no-index`?!)
++++- Feature: Track GPU type
++++- Feature: editable installs are not easily tracked. Either raise error or get git information for editably installed libs?
+++ 
+++-- https://github.com/wandb/wandb/blob/7a7dd30e94e3c27e0af9058248320fe30967157e/wandb/sdk/internal/system/system_info.py#L82
+++-  -  this one file does everything!
+++-- https://github.com/wandb/wandb/blob/7a7dd30e94e3c27e0af9058248320fe30967157e/wandb/sdk/wandb_init.py#L719
+++-- https://github.com/wandb/wandb/blob/7a7dd30e94e3c27e0af9058248320fe30967157e/wandb/sdk/wandb_run.py#L514
+++diff --git a/data/code/little_wandb/main.py b/data/code/little_wandb/main.py
+++deleted file mode 100644
+++index e22e23a..0000000
+++--- a/data/code/little_wandb/main.py
++++++ /dev/null
+++@@ -1,138 +0,0 @@
+++-# %%
+++-# setup logging (wandb logs several DEBUG messages)
+++-import logging
+++-
+++-# create a logger object
+++-logger = logging.getLogger()
+++-
+++-# set the logging level to DEBUG
+++-logger.setLevel(logging.DEBUG)
+++-
+++-# create a console handler and set its level to DEBUG
+++-console_handler = logging.StreamHandler()
+++-console_handler.setLevel(logging.DEBUG)
+++-
+++-# create a formatter and add it to the console handler
+++-formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+++-console_handler.setFormatter(formatter)
+++-
+++-# add the console handler to the logger
+++-logger.addHandler(console_handler)
+++-
+++-# %%
+++-from wandb.sdk.wandb_init import _WandbInit
+++-from wandb.sdk.wandb_settings import Settings
+++-
+++-settings = Settings(
+++-    **dict(
+++-        _offline=True,
+++-    )
+++-)
+++-settings
+++-
+++-
+++-# %%
+++-import wandb
+++-from pprint import pprint
+++-
+++-REPO_DIR = Path(__file__).parents[1]
+++-DATA_DIR = REPO_DIR / "data"
+++-
+++-
+++-settings = wandb.setup().settings
+++-settings._set_run_start_time()
+++-settings.update(
+++-    {
+++-        "_offline": True,
+++-        "save_code": True,
+++-        "files_dir": DATA_DIR,
+++-    }
+++-)
+++-
+++-dct = settings.make_static()
+++-pprint(dct)
+++-static_settings = SettingsStatic(dct)
+++-static_settings
+++-
+++-
+++-# %%
+++-from pathlib import Path
+++-from system_info import SystemInfo, SettingsStatic, Interface
+++-
+++-
+++-class Writer(Interface):
+++-    def __init__(self, outdir: Path) -> None:
+++-        super().__init__()
+++-        self.outdir = outdir
+++-
+++-    def publish_stats(self, stats: dict) -> None:
+++-        raise NotImplementedError
+++-
+++-    def _publish_telemetry(self, telemetry: "TelemetryRecord") -> None:
+++-        raise NotImplementedError
+++-
+++-    def publish_files(self, files_dict: "FilesDict") -> None:
+++-        # List of files t
+++-        print(files_dict)
+++-
+++-
+++-import time
+++-
+++-# d = dict(
+++-#     git_root=None,
+++-#     git_remote=None,
+++-#     git_remote_url=None,
+++-#     git_commit=None,
+++-#     files_dir=DATA_DIR,
+++-#     program_relpath=None,
+++-#     disable_git=False,
+++-#     _os=None,
+++-#     _python=None,
+++-#     _start_time=time.time(),
+++-#     docker=None,
+++-#     _cuda=None,
+++-#     _args=None,
+++-#     disable_code=False,
+++-#     _jupyter=None,
+++-#     notebook_name=None,
+++-#     _jupyter_path=None,
+++-#     _jupyter_name=None,
+++-#     _jupyter_root=None,
+++-#     anonymous=None,
+++-#     host=None,
+++-#     username=None,
+++-#     _save_requirements=None,
+++-#     save_code=None,
+++-#     program=None,
+++-# )
+++-# settings = SettingsStatic(d)
+++-writer = Writer(DATA_DIR)
+++-info = SystemInfo(static_settings, writer)
+++-# info.publish()
+++-probed = info.probe()
+++-probed
+++-
+++-# %%
+++-
+++-"""
+++-Does info.probe() add new information? It adds
+++-- heartbeat 
+++-- state = running
+++-- codePath (= relative path of program)
+++-- git remote and commit -> I likely get this via _save_git, or?!
+++-- root (= base path of program)
+++-"""
+++-
+++-import pandas as pd
+++-
+++-lst = []
+++-for k, v in probed.items():
+++-    v2 = dct.get(k)
+++-    v3 = dct.get("_" + k)
+++-    lst.append({"key": k, "probed": v, "org": v2, "_org": v3})
+++-
+++-pd.DataFrame(lst)
+++-
+++-# %%
+++-
+++-info.publish(probed)
+++diff --git a/data/diff.patch b/data/diff.patch
+++deleted file mode 100644
+++index c9f5d90..0000000
+++--- a/data/diff.patch
++++++ /dev/null
+++@@ -1,273 +0,0 @@
+++-diff --git a/little_wandb/system_info.py b/little_wandb/system_info.py
+++-index e69de29..a7ef2f5 100644
+++---- a/little_wandb/system_info.py
+++-+++ b/little_wandb/system_info.py
+++-@@ -0,0 +1,268 @@
+++-+# Information about the system and the environment
+++-+import datetime
+++-+import glob
+++-+import json
+++-+import logging
+++-+import os
+++-+import subprocess
+++-+import sys
+++-+from shutil import copyfile
+++-+from typing import Any, Dict, List, Optional
+++-+from urllib.parse import unquote
+++-+
+++-+from wandb.sdk.internal.settings_static import SettingsStatic
+++-+from wandb.sdk.lib import filesystem
+++-+from wandb.sdk.lib.filenames import (
+++-+    CONDA_ENVIRONMENTS_FNAME,
+++-+    DIFF_FNAME,
+++-+    METADATA_FNAME,
+++-+    REQUIREMENTS_FNAME,
+++-+)
+++-+from wandb.sdk.lib.git import GitRepo
+++-+
+++-+from wandb.sdk.internal.system.assets.interfaces import Interface
+++-+
+++-+logger = logging.getLogger(__name__)
+++-+
+++-+
+++-+class SystemInfo:
+++-+    # todo: this is mostly a copy of the legacy Meta class, but it should be refactored
+++-+    def __init__(self, settings: SettingsStatic, interface: Interface) -> None:
+++-+        logger.debug("System info init")
+++-+        self.settings = settings
+++-+
+++-+        self.metadata_file_name = os.path.join(self.settings.files_dir, METADATA_FNAME)
+++-+        self.backend_interface = interface
+++-+        self.git = GitRepo(
+++-+            root=self.settings.git_root,
+++-+            remote=self.settings.git_remote,  # type: ignore
+++-+            remote_url=self.settings.git_remote_url,
+++-+            commit=self.settings.git_commit,
+++-+        )
+++-+        # Location under "code" directory in files where program was saved.
+++-+        self.saved_program: Optional[os.PathLike] = None
+++-+        # Locations under files directory where diff patches were saved.
+++-+        self.saved_patches: List[str] = []
+++-+        logger.debug("System info init done")
+++-+
+++-+    # todo: refactor these _save_* methods
+++-+    def _save_pip(self) -> None:
+++-+        """Save the current working set of pip packages to {REQUIREMENTS_FNAME}."""
+++-+        logger.debug(
+++-+            "Saving list of pip packages installed into the current environment"
+++-+        )
+++-+        try:
+++-+            import pkg_resources
+++-+
+++-+            installed_packages = [d for d in iter(pkg_resources.working_set)]
+++-+            installed_packages_list = sorted(
+++-+                f"{i.key}=={i.version}" for i in installed_packages
+++-+            )
+++-+            with open(
+++-+                os.path.join(self.settings.files_dir, REQUIREMENTS_FNAME), "w"
+++-+            ) as f:
+++-+                f.write("\n".join(installed_packages_list))
+++-+        except Exception as e:
+++-+            logger.exception(f"Error saving pip packages: {e}")
+++-+        logger.debug("Saving pip packages done")
+++-+
+++-+    def _save_conda(self) -> None:
+++-+        current_shell_is_conda = os.path.exists(os.path.join(sys.prefix, "conda-meta"))
+++-+        if not current_shell_is_conda:
+++-+            return None
+++-+
+++-+        logger.debug(
+++-+            "Saving list of conda packages installed into the current environment"
+++-+        )
+++-+        try:
+++-+            with open(
+++-+                os.path.join(self.settings.files_dir, CONDA_ENVIRONMENTS_FNAME), "w"
+++-+            ) as f:
+++-+                subprocess.call(
+++-+                    ["conda", "env", "export"], stdout=f, stderr=subprocess.DEVNULL
+++-+                )
+++-+        except Exception as e:
+++-+            logger.exception(f"Error saving conda packages: {e}")
+++-+        logger.debug("Saving conda packages done")
+++-+
+++-+    def _save_code(self) -> None:
+++-+        logger.debug("Saving code")
+++-+        if self.settings.program_relpath is None:
+++-+            logger.warning("unable to save code -- program entry not found")
+++-+            return None
+++-+
+++-+        root: str = self.git.root or os.getcwd()
+++-+        program_relative: str = self.settings.program_relpath
+++-+        filesystem.mkdir_exists_ok(
+++-+            os.path.join(
+++-+                self.settings.files_dir, "code", os.path.dirname(program_relative)
+++-+            )
+++-+        )
+++-+        program_absolute = os.path.join(root, program_relative)
+++-+        if not os.path.exists(program_absolute):
+++-+            logger.warning("unable to save code -- can't find %s" % program_absolute)
+++-+            return None
+++-+        saved_program = os.path.join(self.settings.files_dir, "code", program_relative)
+++-+        self.saved_program = program_relative  # type: ignore
+++-+
+++-+        if not os.path.exists(saved_program):
+++-+            copyfile(program_absolute, saved_program)
+++-+        logger.debug("Saving code done")
+++-+
+++-+    def _save_patches(self) -> None:
+++-+        """Save the current state of this repository to one or more patches.
+++-+
+++-+        Makes one patch against HEAD and another one against the most recent
+++-+        commit that occurs in an upstream branch. This way we can be robust
+++-+        to history editing as long as the user never does "push -f" to break
+++-+        history on an upstream branch.
+++-+
+++-+        Writes the first patch to <files_dir>/<DIFF_FNAME> and the second to
+++-+        <files_dir>/upstream_diff_<commit_id>.patch.
+++-+
+++-+        """
+++-+        if not self.git.enabled:
+++-+            return None
+++-+
+++-+        logger.debug("Saving git patches")
+++-+        try:
+++-+            root = self.git.root
+++-+            diff_args = ["git", "diff"]
+++-+            if self.git.has_submodule_diff:
+++-+                diff_args.append("--submodule=diff")
+++-+
+++-+            if self.git.dirty:
+++-+                patch_path = os.path.join(self.settings.files_dir, DIFF_FNAME)
+++-+                with open(patch_path, "wb") as patch:
+++-+                    # we diff against HEAD to ensure we get changes in the index
+++-+                    subprocess.check_call(
+++-+                        diff_args + ["HEAD"], stdout=patch, cwd=root, timeout=5
+++-+                    )
+++-+                    self.saved_patches.append(
+++-+                        os.path.relpath(patch_path, start=self.settings.files_dir)
+++-+                    )
+++-+
+++-+            upstream_commit = self.git.get_upstream_fork_point()  # type: ignore
+++-+            if upstream_commit and upstream_commit != self.git.repo.head.commit:
+++-+                sha = upstream_commit.hexsha
+++-+                upstream_patch_path = os.path.join(
+++-+                    self.settings.files_dir, f"upstream_diff_{sha}.patch"
+++-+                )
+++-+                with open(upstream_patch_path, "wb") as upstream_patch:
+++-+                    subprocess.check_call(
+++-+                        diff_args + [sha], stdout=upstream_patch, cwd=root, timeout=5
+++-+                    )
+++-+                    self.saved_patches.append(
+++-+                        os.path.relpath(
+++-+                            upstream_patch_path, start=self.settings.files_dir
+++-+                        )
+++-+                    )
+++-+        # TODO: A customer saw `ValueError: Reference at 'refs/remotes/origin/foo'
+++-+        #  does not exist` so we now catch ValueError. Catching this error feels
+++-+        #  too generic.
+++-+        except (
+++-+            ValueError,
+++-+            subprocess.CalledProcessError,
+++-+            subprocess.TimeoutExpired,
+++-+        ) as e:
+++-+            logger.error("Error generating diff: %s" % e)
+++-+        logger.debug("Saving git patches done")
+++-+
+++-+    def _probe_git(self, data: Dict[str, Any]) -> Dict[str, Any]:
+++-+        if self.settings.disable_git:
+++-+            return data
+++-+
+++-+        # in case of manually passing the git repo info, `enabled` would be False,
+++-+        # but we still want to save the git repo info
+++-+        if not self.git.enabled and self.git.auto:
+++-+            return data
+++-+
+++-+        logger.debug("Probing git")
+++-+
+++-+        data["git"] = {
+++-+            "remote": self.git.remote_url,
+++-+            "commit": self.git.last_commit,
+++-+        }
+++-+        data["email"] = self.git.email
+++-+        data["root"] = self.git.root or data.get("root") or os.getcwd()
+++-+        logger.debug("Probing git done")
+++-+
+++-+        return data
+++-+
+++-+    def probe(self) -> Dict[str, Any]:
+++-+        """Probe the system for information about the current environment."""
+++-+        # todo: refactor this quality code 🤮🤮🤮🤮🤮
+++-+        logger.debug("Probing system")
+++-+        data: Dict[str, Any] = dict()
+++-+
+++-+        data["os"] = self.settings._os
+++-+        data["python"] = self.settings._python
+++-+        data["heartbeatAt"] = datetime.datetime.utcnow().isoformat()
+++-+        data["startedAt"] = datetime.datetime.utcfromtimestamp(
+++-+            self.settings._start_time
+++-+        ).isoformat()
+++-+
+++-+        data["docker"] = self.settings.docker
+++-+
+++-+        data["cuda"] = self.settings._cuda
+++-+        data["args"] = self.settings._args
+++-+        data["state"] = "running"
+++-+
+++-+        if self.settings.program is not None:
+++-+            data["program"] = self.settings.program
+++-+        if not self.settings.disable_code:
+++-+            if self.settings.program_relpath is not None:
+++-+                data["codePath"] = self.settings.program_relpath
+++-+            elif self.settings._jupyter:
+++-+                if self.settings.notebook_name:
+++-+                    data["program"] = self.settings.notebook_name
+++-+                elif self.settings._jupyter_path:
+++-+                    if self.settings._jupyter_path.startswith("fileId="):
+++-+                        unescaped = unquote(self.settings._jupyter_path)
+++-+                        data["colab"] = (
+++-+                            "https://colab.research.google.com/notebook#" + unescaped
+++-+                        )
+++-+                        data["program"] = self.settings._jupyter_name
+++-+                    else:
+++-+                        data["program"] = self.settings._jupyter_path
+++-+                        data["root"] = self.settings._jupyter_root
+++-+            # get the git repo info
+++-+            data = self._probe_git(data)
+++-+
+++-+        if self.settings.anonymous != "true":
+++-+            data["host"] = self.settings.host
+++-+            data["username"] = self.settings.username
+++-+            data["executable"] = sys.executable
+++-+        else:
+++-+            data.pop("email", None)
+++-+            data.pop("root", None)
+++-+
+++-+        logger.debug("Probing system done")
+++-+
+++-+        return data
+++-+
+++-+    def publish(self, system_info: dict) -> None:
+++-+        # save pip, conda, code patches to disk
+++-+        if self.settings._save_requirements:
+++-+            self._save_pip()
+++-+            self._save_conda()
+++-+        if self.settings.save_code:
+++-+            self._save_code()
+++-+            self._save_patches()
+++-+
+++-+        # save system_info to disk
+++-+        with open(self.metadata_file_name, "w") as f:
+++-+            s = json.dumps(system_info, indent=4)
+++-+            f.write(s)
+++-+            f.write("\n")
+++-+        base_name = os.path.basename(self.metadata_file_name)
+++-+        files = dict(files=[(base_name, "now")])
+++-+
+++-+        if self.saved_program:
+++-+            saved_program = os.path.join("code", self.saved_program)
+++-+            files["files"].append((glob.escape(saved_program), "now"))
+++-+        for patch in self.saved_patches:
+++-+            files["files"].append((glob.escape(patch), "now"))
+++-+
+++-+        # publish files to the backend
+++-+        self.backend_interface.publish_files(files)  # type: ignore
+++diff --git a/example_notebook.ipynb b/example_notebook.ipynb
+++new file mode 100644
+++index 0000000..a611d25
+++--- /dev/null
++++++ b/example_notebook.ipynb
+++@@ -0,0 +1,260 @@
++++{
++++ "cells": [
++++  {
++++   "cell_type": "code",
++++   "execution_count": 1,
++++   "metadata": {},
++++   "outputs": [],
++++   "source": [
++++    "%load_ext autoreload\n",
++++    "%autoreload 2"
++++   ]
++++  },
++++  {
++++   "cell_type": "code",
++++   "execution_count": 20,
++++   "metadata": {},
++++   "outputs": [
++++    {
++++     "name": "stderr",
++++     "output_type": "stream",
++++     "text": [
++++      "DEBUG:little_wandb._main:{'_args': None,\n",
++++      " '_async_upload_concurrency_limit': None,\n",
++++      " '_cli_only_mode': None,\n",
++++      " '_colab': False,\n",
++++      " '_config_dict': None,\n",
++++      " '_console': <SettingsConsole.WRAP: 1>,\n",
++++      " '_cuda': None,\n",
++++      " '_disable_meta': None,\n",
++++      " '_disable_service': False,\n",
++++      " '_disable_stats': None,\n",
++++      " '_disable_viewer': None,\n",
++++      " '_except_exit': None,\n",
++++      " '_executable': '/home/ubuntu/git/litte_wandb/venv/bin/python',\n",
++++      " '_extra_http_headers': None,\n",
++++      " '_flow_control_custom': False,\n",
++++      " '_flow_control_disabled': False,\n",
++++      " '_internal_check_process': 8,\n",
++++      " '_internal_queue_timeout': 2,\n",
++++      " '_ipython': False,\n",
++++      " '_jupyter': True,\n",
++++      " '_jupyter_name': None,\n",
++++      " '_jupyter_path': None,\n",
++++      " '_jupyter_root': None,\n",
++++      " '_kaggle': False,\n",
++++      " '_live_policy_rate_limit': None,\n",
++++      " '_live_policy_wait_time': None,\n",
++++      " '_log_level': None,\n",
++++      " '_network_buffer': None,\n",
++++      " '_noop': False,\n",
++++      " '_notebook': True,\n",
++++      " '_offline': False,\n",
++++      " '_os': 'Linux-5.19.0-1024-aws-x86_64-with-glibc2.35',\n",
++++      " '_platform': 'linux',\n",
++++      " '_python': '3.10.6',\n",
++++      " '_runqueue_item_id': None,\n",
++++      " '_save_requirements': True,\n",
++++      " '_service_transport': None,\n",
++++      " '_service_wait': 30.0,\n",
++++      " '_start_datetime': datetime.datetime(2023, 5, 9, 17, 30, 36, 344702),\n",
++++      " '_start_time': 1683653436.3447022,\n",
++++      " '_stats_join_assets': True,\n",
++++      " '_stats_neuron_monitor_config_path': None,\n",
++++      " '_stats_open_metrics_endpoints': None,\n",
++++      " '_stats_open_metrics_filters': ('.*',),\n",
++++      " '_stats_pid': 3916455,\n",
++++      " '_stats_sample_rate_seconds': 2.0,\n",
++++      " '_stats_samples_to_average': 15,\n",
++++      " '_sync': False,\n",
++++      " '_tmp_code_dir': '/home/ubuntu/git/litte_wandb/wandb/run-20230509_173036-None/tmp/code',\n",
++++      " '_tracelog': None,\n",
++++      " '_unsaved_keys': None,\n",
++++      " '_windows': False,\n",
++++      " 'allow_val_change': None,\n",
++++      " 'anonymous': None,\n",
++++      " 'api_key': None,\n",
++++      " 'base_url': 'https://api.wandb.ai',\n",
++++      " 'code_dir': None,\n",
++++      " 'config_paths': None,\n",
++++      " 'console': 'auto',\n",
++++      " 'deployment': 'cloud',\n",
++++      " 'disable_code': None,\n",
++++      " 'disable_git': False,\n",
++++      " 'disable_hints': None,\n",
++++      " 'disable_job_creation': False,\n",
++++      " 'disabled': False,\n",
++++      " 'docker': None,\n",
++++      " 'email': None,\n",
++++      " 'entity': None,\n",
++++      " 'files_dir': '/home/ubuntu/git/litte_wandb/example_output',\n",
++++      " 'force': None,\n",
++++      " 'git_commit': None,\n",
++++      " 'git_remote': 'origin',\n",
++++      " 'git_remote_url': None,\n",
++++      " 'git_root': None,\n",
++++      " 'heartbeat_seconds': 30,\n",
++++      " 'host': 'cgebbe-r6id.img.astrazeneca.net',\n",
++++      " 'ignore_globs': (),\n",
++++      " 'init_timeout': 60.0,\n",
++++      " 'is_local': False,\n",
++++      " 'label_disable': None,\n",
++++      " 'launch': None,\n",
++++      " 'launch_config_path': None,\n",
++++      " 'log_dir': '/home/ubuntu/git/litte_wandb/wandb/run-20230509_173036-None/logs',\n",
++++      " 'log_internal': '/home/ubuntu/git/litte_wandb/wandb/run-20230509_173036-None/logs/debug-internal.log',\n",
++++      " 'log_symlink_internal': '/home/ubuntu/git/litte_wandb/wandb/debug-internal.log',\n",
++++      " 'log_symlink_user': '/home/ubuntu/git/litte_wandb/wandb/debug.log',\n",
++++      " 'log_user': '/home/ubuntu/git/litte_wandb/wandb/run-20230509_173036-None/logs/debug.log',\n",
++++      " 'login_timeout': None,\n",
++++      " 'magic': None,\n",
++++      " 'mode': 'online',\n",
++++      " 'notebook_name': None,\n",
++++      " 'problem': 'fatal',\n",
++++      " 'program': '<python with no main file>',\n",
++++      " 'program_relpath': None,\n",
++++      " 'project': None,\n",
++++      " 'project_url': '',\n",
++++      " 'quiet': None,\n",
++++      " 'reinit': None,\n",
++++      " 'relogin': None,\n",
++++      " 'resume': None,\n",
++++      " 'resume_fname': '/home/ubuntu/git/litte_wandb/wandb/wandb-resume.json',\n",
++++      " 'resumed': False,\n",
++++      " 'root_dir': '/home/ubuntu/git/litte_wandb',\n",
++++      " 'run_group': None,\n",
++++      " 'run_id': None,\n",
++++      " 'run_job_type': None,\n",
++++      " 'run_mode': 'run',\n",
++++      " 'run_name': None,\n",
++++      " 'run_notes': None,\n",
++++      " 'run_tags': None,\n",
++++      " 'run_url': '',\n",
++++      " 'sagemaker_disable': None,\n",
++++      " 'save_code': True,\n",
++++      " 'settings_system': '/home/ubuntu/.config/wandb/settings',\n",
++++      " 'settings_workspace': '/home/ubuntu/git/litte_wandb/wandb/settings',\n",
++++      " 'show_colors': None,\n",
++++      " 'show_emoji': None,\n",
++++      " 'show_errors': True,\n",
++++      " 'show_info': True,\n",
++++      " 'show_warnings': True,\n",
++++      " 'silent': False,\n",
++++      " 'start_method': None,\n",
++++      " 'strict': None,\n",
++++      " 'summary_errors': None,\n",
++++      " 'summary_timeout': 60,\n",
++++      " 'summary_warnings': 5,\n",
++++      " 'sweep_id': None,\n",
++++      " 'sweep_param_path': None,\n",
++++      " 'sweep_url': '',\n",
++++      " 'symlink': True,\n",
++++      " 'sync_dir': '/home/ubuntu/git/litte_wandb/wandb/run-20230509_173036-None',\n",
++++      " 'sync_file': '/home/ubuntu/git/litte_wandb/wandb/run-20230509_173036-None/run-None.wandb',\n",
++++      " 'sync_symlink_latest': '/home/ubuntu/git/litte_wandb/wandb/latest-run',\n",
++++      " 'system_sample': 15,\n",
++++      " 'system_sample_seconds': 2,\n",
++++      " 'table_raise_on_max_row_limit_exceeded': False,\n",
++++      " 'timespec': '20230509_173036',\n",
++++      " 'tmp_dir': '/home/ubuntu/git/litte_wandb/wandb/run-20230509_173036-None/tmp',\n",
++++      " 'username': 'ubuntu',\n",
++++      " 'wandb_dir': '/home/ubuntu/git/litte_wandb/wandb/'}\n",
++++      "DEBUG:wandb.sdk.internal.system.system_info:System info init\n",
++++      "DEBUG:wandb.sdk.internal.system.system_info:System info init done\n",
++++      "DEBUG:wandb.sdk.internal.system.system_info:Probing system\n",
++++      "DEBUG:wandb.sdk.internal.system.system_info:Probing git\n",
++++      "DEBUG:git.cmd:Popen(['git', 'cat-file', '--batch-check'], cwd=/home/ubuntu/git/litte_wandb, universal_newlines=False, shell=None, istream=<valid stream>)\n",
++++      "DEBUG:git.cmd:Popen(['git', 'rev-parse', '--show-toplevel'], cwd=/home/ubuntu/git/litte_wandb, universal_newlines=False, shell=None, istream=None)\n",
++++      "DEBUG:wandb.sdk.internal.system.system_info:Probing git done\n",
++++      "DEBUG:wandb.sdk.internal.system.system_info:Probing system done\n",
++++      "DEBUG:little_wandb._main:{'args': None,\n",
++++      " 'cuda': None,\n",
++++      " 'docker': None,\n",
++++      " 'email': '',\n",
++++      " 'executable': '/home/ubuntu/git/litte_wandb/venv/bin/python',\n",
++++      " 'git': {'commit': 'ebe48bbda2ce92fb624a503d744690a3e6c24745',\n",
++++      "         'remote': 'git@gitlab.img.astrazeneca.net:RA/experimental/litte_wandb.git'},\n",
++++      " 'heartbeatAt': '2023-05-09T17:30:36.347937',\n",
++++      " 'host': 'cgebbe-r6id.img.astrazeneca.net',\n",
++++      " 'os': 'Linux-5.19.0-1024-aws-x86_64-with-glibc2.35',\n",
++++      " 'program': '<python with no main file>',\n",
++++      " 'python': '3.10.6',\n",
++++      " 'root': '/home/ubuntu/git/litte_wandb',\n",
++++      " 'startedAt': '2023-05-09T17:30:36.344702',\n",
++++      " 'state': 'running',\n",
++++      " 'username': 'ubuntu'}\n",
++++      "DEBUG:wandb.sdk.internal.system.system_info:Saving list of pip packages installed into the current environment\n",
++++      "DEBUG:wandb.sdk.internal.system.system_info:Saving pip packages done\n",
++++      "DEBUG:wandb.sdk.internal.system.system_info:Saving code\n",
++++      "WARNING:wandb.sdk.internal.system.system_info:unable to save code -- program entry not found\n",
++++      "DEBUG:wandb.sdk.internal.system.system_info:Saving git patches\n",
++++      "DEBUG:git.cmd:Popen(['git', 'rev-parse', '--show-toplevel'], cwd=/home/ubuntu/git/litte_wandb, universal_newlines=False, shell=None, istream=None)\n",
++++      "DEBUG:git.cmd:Popen(['git', 'version'], cwd=/home/ubuntu/git/litte_wandb, universal_newlines=False, shell=None, istream=None)\n",
++++      "DEBUG:git.cmd:Popen(['git', 'diff', '--cached', '--abbrev=40', '--full-index', '--raw'], cwd=/home/ubuntu/git/litte_wandb, universal_newlines=False, shell=None, istream=None)\n",
++++      "DEBUG:git.cmd:Popen(['git', 'diff', '--abbrev=40', '--full-index', '--raw'], cwd=/home/ubuntu/git/litte_wandb, universal_newlines=False, shell=None, istream=None)\n",
++++      "DEBUG:git.cmd:Popen(['git', 'merge-base', 'HEAD', '329d464b3ae6404391188999ae41baabbc3dcd99'], cwd=/home/ubuntu/git/litte_wandb, universal_newlines=False, shell=None, istream=None)\n",
++++      "DEBUG:wandb.sdk.internal.system.system_info:Saving git patches done\n",
++++      "INFO:little_wandb._main:Wrote the following files: \n",
++++      "[('wandb-metadata.json', 'now'),\n",
++++      " ('diff.patch', 'now'),\n",
++++      " ('upstream_diff_329d464b3ae6404391188999ae41baabbc3dcd99.patch', 'now')]\n"
++++     ]
++++    }
++++   ],
++++   "source": [
++++    "from pathlib import Path\n",
++++    "from little_wandb import dump_infos\n",
++++    "import logging \n",
++++    "\n",
++++    "# wandb emits many useful DEBUG messages by default\n",
++++    "logging.basicConfig(level=logging.DEBUG) \n",
++++    "\n",
++++    "logdir=Path().resolve() / \"example_output\"\n",
++++    "dump_infos(logdir)"
++++   ]
++++  },
++++  {
++++   "cell_type": "code",
++++   "execution_count": 10,
++++   "metadata": {},
++++   "outputs": [
++++    {
++++     "name": "stdout",
++++     "output_type": "stream",
++++     "text": [
++++      "/home/ubuntu/git/litte_wandb/example_output\n",
++++      "/home/ubuntu/git/litte_wandb/example_output/requirements.txt\n",
++++      "/home/ubuntu/git/litte_wandb/example_output/wandb-metadata.json\n",
++++      "/home/ubuntu/git/litte_wandb/example_output/upstream_diff_329d464b3ae6404391188999ae41baabbc3dcd99.patch\n",
++++      "/home/ubuntu/git/litte_wandb/example_output/diff.patch\n"
++++     ]
++++    }
++++   ],
++++   "source": [
++++    "!find {logdir}"
++++   ]
++++  }
++++ ],
++++ "metadata": {
++++  "kernelspec": {
++++   "display_name": "venv",
++++   "language": "python",
++++   "name": "python3"
++++  },
++++  "language_info": {
++++   "codemirror_mode": {
++++    "name": "ipython",
++++    "version": 3
++++   },
++++   "file_extension": ".py",
++++   "mimetype": "text/x-python",
++++   "name": "python",
++++   "nbconvert_exporter": "python",
++++   "pygments_lexer": "ipython3",
++++   "version": "3.10.6"
++++  },
++++  "orig_nbformat": 4
++++ },
++++ "nbformat": 4,
++++ "nbformat_minor": 2
++++}
+++diff --git a/example_output/diff.patch b/example_output/diff.patch
+++new file mode 100644
+++index 0000000..5bbfead
+++diff --git a/data/requirements.txt b/example_output/requirements.txt
+++similarity index 81%
+++rename from data/requirements.txt
+++rename to example_output/requirements.txt
+++index b1ef74d..2c63f75 100644
+++--- a/data/requirements.txt
++++++ b/example_output/requirements.txt
+++@@ -1,5 +1,7 @@
++++ansiwrap==0.8.4
+++ appdirs==1.4.4
+++ asttokens==2.2.1
++++attrs==23.1.0
+++ backcall==0.2.0
+++ build==0.10.0
+++ certifi==2023.5.7
+++@@ -9,7 +11,9 @@ comm==0.1.3
+++ debugpy==1.6.7
+++ decorator==5.1.1
+++ docker-pycreds==0.4.0
++++entrypoints==0.4
+++ executing==1.2.0
++++fastjsonschema==2.16.3
+++ gitdb==4.0.10
+++ gitpython==3.1.31
+++ idna==3.4
+++@@ -17,13 +21,17 @@ invoke==2.1.1
+++ ipykernel==6.23.0
+++ ipython==8.13.2
+++ jedi==0.18.2
++++jsonschema==4.17.3
+++ jupyter-client==8.2.0
+++ jupyter-core==5.3.0
+++ matplotlib-inline==0.1.6
++++nbclient==0.7.4
++++nbformat==5.8.0
+++ nest-asyncio==1.5.6
+++ numpy==1.24.3
+++ packaging==23.1
+++ pandas==2.0.1
++++papermill==2.4.0
+++ parso==0.8.3
+++ pathtools==0.1.2
+++ pexpect==4.8.0
+++@@ -38,6 +46,7 @@ ptyprocess==0.7.0
+++ pure-eval==0.2.2
+++ pygments==2.15.1
+++ pyproject-hooks==1.0.0
++++pyrsistent==0.19.3
+++ python-dateutil==2.8.2
+++ pytz==2023.3
+++ pyyaml==6.0
+++@@ -49,8 +58,11 @@ setuptools==67.7.2
+++ six==1.16.0
+++ smmap==5.0.0
+++ stack-data==0.6.2
++++tenacity==8.2.2
++++textwrap3==0.9.2
+++ tomli==2.0.1
+++ tornado==6.3.1
++++tqdm==4.65.0
+++ traitlets==5.9.0
+++ tzdata==2023.3
+++ urllib3==1.26.15
+++diff --git a/data/upstream_diff_329d464b3ae6404391188999ae41baabbc3dcd99.patch b/example_output/upstream_diff_329d464b3ae6404391188999ae41baabbc3dcd99.patch
+++similarity index 95%
+++rename from data/upstream_diff_329d464b3ae6404391188999ae41baabbc3dcd99.patch
+++rename to example_output/upstream_diff_329d464b3ae6404391188999ae41baabbc3dcd99.patch
+++index 1844bb2..7d6677f 100644
+++--- a/data/upstream_diff_329d464b3ae6404391188999ae41baabbc3dcd99.patch
++++++ b/example_output/upstream_diff_329d464b3ae6404391188999ae41baabbc3dcd99.patch
+++@@ -29,42 +29,47 @@ index 0000000..b5afdd9
+++ +SOFTWARE.
+++ \ No newline at end of file
+++ diff --git a/README.md b/README.md
+++-index 93cc13f..66097da 100644
++++index 93cc13f..d124559 100644
+++ --- a/README.md
+++ +++ b/README.md
+++-@@ -1,92 +1,18 @@
++++@@ -1,92 +1,26 @@
+++  # litte_wandb
+++  
+++ -Extracts the automatic logging part from the weights and biases library.
+++ +Extracts the [automatic logging](https://docs.wandb.ai/guides/track/log#automatically-logged-data) part from the weights and biases library.
+++  
+++ -## Getting started
+++-+## Desired output
+++++## How it works
+++  
+++ -To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+++-+- system info
+++-+- pip- or conda-environment
+++-+- git repo including patches
+++-+- stdin, stdout, stderr ?!
+++-+- system metrics (?) This is not a snapshot, but rather 
+++++Simply call `little_wandb.dump_info()` to track the following information:
+++  
+++ -Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+++-+## Relevant code
+++++- system info (hostname, user, time, OS)
+++++- current pip- or conda-environment
+++++- git repo including diff patches to current local commit *and recent upstream commit*
+++  
+++ -## Add your files
+++--
++++ 
+++ -- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
+++ -- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+++--
++++ 
+++ -```
+++ -cd existing_repo
+++ -git remote add origin https://gitlab.img.astrazeneca.net/RA/experimental/litte_wandb.git
+++ -git branch -M master
+++ -git push -uf origin master
+++ -```
+++--
+++++## Known limitations
++++ 
+++ -## Integrate with your tools
+++--
+++++- Problem: If called from a jupyter notebook, it will not copy the executing file.
+++++  - root cause: wandb determines the program via `__main__.__file__` which raises an AttributeError in Jupyter
+++++  - solution: fix upstream `_get_program` in wandb/sdk/wandb_settings.py
+++++- Problem: The diff patch does not include (new) untracked files
+++++  - solution: fix upstream `_save_patches` in wandb/sdk/internal/system/system_info.py (`git diff --no-index`?!)
+++++- does it track 
++++ 
+++ -- [ ] [Set up project integrations](https://gitlab.img.astrazeneca.net/RA/experimental/litte_wandb/-/settings/integrations)
+++ -
+++ -## Collaborate with your team
+++@@ -133,10 +138,10 @@ index 93cc13f..66097da 100644
+++ -
+++ -## Project status
+++ -If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+++-+- https://github.com/wandb/wandb/blob/7a7dd30e94e3c27e0af9058248320fe30967157e/wandb/sdk/internal/system/system_info.py#L82
+++-+  -  this one file does everything!
+++-+- https://github.com/wandb/wandb/blob/7a7dd30e94e3c27e0af9058248320fe30967157e/wandb/sdk/wandb_init.py#L719
+++-+- https://github.com/wandb/wandb/blob/7a7dd30e94e3c27e0af9058248320fe30967157e/wandb/sdk/wandb_run.py#L514
+++++It does not track stdin, stdout or stderr
+++++- Also track stdin, stdout, stderr ?!
+++++- system metrics (?) This is not a snapshot, but rather 
++++\ No newline at end of file
+++ diff --git a/little_wandb/system_info.py b/little_wandb/system_info.py
+++ new file mode 100644
+++ index 0000000..a7ef2f5
+++diff --git a/data/wandb-metadata.json b/example_output/wandb-metadata.json
+++similarity index 50%
+++rename from data/wandb-metadata.json
+++rename to example_output/wandb-metadata.json
+++index aed9dbb..34bc7bd 100644
+++--- a/data/wandb-metadata.json
++++++ b/example_output/wandb-metadata.json
+++@@ -1,21 +1,24 @@
+++ {
+++     "os": "Linux-5.19.0-1024-aws-x86_64-with-glibc2.35",
+++     "python": "3.10.6",
+++-    "heartbeatAt": "2023-05-09T15:43:45.010929",
+++-    "startedAt": "2023-05-09T15:43:24.100325",
++++    "heartbeatAt": "2023-05-09T17:42:54.375070",
++++    "startedAt": "2023-05-09T17:42:54.370760",
+++     "docker": null,
+++     "cuda": null,
+++-    "args": null,
++++    "args": [
++++        "-f",
++++        "/tmp/tmpnhb9j856.json",
++++        "--HistoryManager.hist_file=:memory:"
++++    ],
+++     "state": "running",
+++-    "program": "/home/ubuntu/git/litte_wandb/little_wandb/main.py",
+++-    "codePath": "little_wandb/main.py",
++++    "program": "<python with no main file>",
+++     "git": {
+++         "remote": "git@gitlab.img.astrazeneca.net:RA/experimental/litte_wandb.git",
+++-        "commit": "d600a4126cb31d70d4cdd4b5ff455a6ec21adee5"
++++        "commit": "ebe48bbda2ce92fb624a503d744690a3e6c24745"
+++     },
+++     "email": "",
+++     "root": "/home/ubuntu/git/litte_wandb",
+++     "host": "cgebbe-r6id.img.astrazeneca.net",
+++     "username": "ubuntu",
+++-    "executable": "/home/ubuntu/git/litte_wandb/venv/bin/python"
++++    "executable": "/home/ubuntu/git/litte_wandb/venv/bin/python3"
+++ }
+++diff --git a/little_wandb/__init__.py b/little_wandb/__init__.py
+++new file mode 100644
+++index 0000000..300107c
+++--- /dev/null
++++++ b/little_wandb/__init__.py
+++@@ -0,0 +1 @@
++++from ._main import dump_infos
+++diff --git a/little_wandb/_main.py b/little_wandb/_main.py
+++new file mode 100644
+++index 0000000..43fdf13
+++--- /dev/null
++++++ b/little_wandb/_main.py
+++@@ -0,0 +1,47 @@
++++import wandb
++++import pprint
++++from pathlib import Path
++++from wandb.sdk.internal.system.system_info import SystemInfo, SettingsStatic, Interface
++++import logging
++++
++++_LOGGER = logging.getLogger(__name__)
++++
++++
++++def _get_settings(logdir: Path, track_code: bool) -> SettingsStatic:
++++    settings = wandb.setup().settings
++++    settings._set_run_start_time()
++++    settings.update(
++++        {
++++            "_offline": True,
++++            "save_code": track_code,
++++            "files_dir": logdir,
++++        }
++++    )
++++
++++    dct = settings.make_static()
++++    _LOGGER.debug(pprint.pformat(dct))
++++    return SettingsStatic(dct)
++++
++++
++++class _DummyInterace(Interface):
++++    def publish_stats(self, stats: dict) -> None:
++++        raise NotImplementedError
++++
++++    def _publish_telemetry(self, telemetry: "TelemetryRecord") -> None:
++++        raise NotImplementedError
++++
++++    def publish_files(self, files_dict: "FilesDict") -> None:
++++        s = pprint.pformat(files_dict["files"])
++++        _LOGGER.info(f"Wrote the following files: \n{s}")
++++
++++
++++def dump_infos(logdir: Path, track_code: bool = True):
++++    writer = _DummyInterace()
++++    settings = _get_settings(logdir=logdir, track_code=track_code)
++++    info = SystemInfo(settings, writer)
++++
++++    info_dct = info.probe()
++++    _LOGGER.debug(pprint.pformat(info_dct))
++++
++++    logdir.mkdir(exist_ok=True, parents=True)
++++    info.publish(info_dct)
+++diff --git a/little_wandb/main.py b/little_wandb/main.py
+++deleted file mode 100644
+++index c4d054f..0000000
+++--- a/little_wandb/main.py
++++++ /dev/null
+++@@ -1,142 +0,0 @@
+++-# %%
+++-# setup logging (wandb logs several DEBUG messages)
+++-import logging
+++-
+++-logging.basicConfig(level=logging.DEBUG)
+++-
+++-# create a logger object
+++-# logger = logging.getLogger()
+++-
+++-# set the logging level to DEBUG
+++-# logger.setLevel(logging.DEBUG)
+++-
+++-# # create a console handler and set its level to DEBUG
+++-# console_handler = logging.StreamHandler()
+++-# console_handler.setLevel(logging.DEBUG)
+++-
+++-# # create a formatter and add it to the console handler
+++-# formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+++-# console_handler.setFormatter(formatter)
+++-
+++-# # add the console handler to the logger
+++-# logger.addHandler(console_handler)
+++-
+++-# %%
+++-from wandb.sdk.wandb_init import _WandbInit
+++-from wandb.sdk.wandb_settings import Settings
+++-
+++-settings = Settings(
+++-    **dict(
+++-        _offline=True,
+++-    )
+++-)
+++-settings
+++-
+++-
+++-# %%
+++-import wandb
+++-from pprint import pprint
+++-from pathlib import Path
+++-from system_info import SystemInfo, SettingsStatic, Interface
+++-
+++-REPO_DIR = Path(__file__).parents[1]
+++-DATA_DIR = REPO_DIR / "data"
+++-
+++-
+++-settings = wandb.setup().settings
+++-settings._set_run_start_time()
+++-settings.update(
+++-    {
+++-        "_offline": True,
+++-        "save_code": True,
+++-        "files_dir": DATA_DIR,
+++-    }
+++-)
+++-
+++-dct = settings.make_static()
+++-pprint(dct)
+++-static_settings = SettingsStatic(dct)
+++-static_settings
+++-
+++-
+++-# %%
+++-from pathlib import Path
+++-from system_info import SystemInfo, SettingsStatic, Interface
+++-
+++-
+++-class Writer(Interface):
+++-    def __init__(self, outdir: Path) -> None:
+++-        super().__init__()
+++-        self.outdir = outdir
+++-
+++-    def publish_stats(self, stats: dict) -> None:
+++-        raise NotImplementedError
+++-
+++-    def _publish_telemetry(self, telemetry: "TelemetryRecord") -> None:
+++-        raise NotImplementedError
+++-
+++-    def publish_files(self, files_dict: "FilesDict") -> None:
+++-        # List of files t
+++-        print(files_dict)
+++-
+++-
+++-import time
+++-
+++-# d = dict(
+++-#     git_root=None,
+++-#     git_remote=None,
+++-#     git_remote_url=None,
+++-#     git_commit=None,
+++-#     files_dir=DATA_DIR,
+++-#     program_relpath=None,
+++-#     disable_git=False,
+++-#     _os=None,
+++-#     _python=None,
+++-#     _start_time=time.time(),
+++-#     docker=None,
+++-#     _cuda=None,
+++-#     _args=None,
+++-#     disable_code=False,
+++-#     _jupyter=None,
+++-#     notebook_name=None,
+++-#     _jupyter_path=None,
+++-#     _jupyter_name=None,
+++-#     _jupyter_root=None,
+++-#     anonymous=None,
+++-#     host=None,
+++-#     username=None,
+++-#     _save_requirements=None,
+++-#     save_code=None,
+++-#     program=None,
+++-# )
+++-# settings = SettingsStatic(d)
+++-writer = Writer(DATA_DIR)
+++-info = SystemInfo(static_settings, writer)
+++-# info.publish()
+++-probed = info.probe()
+++-probed
+++-
+++-# %%
+++-
+++-"""
+++-Does info.probe() add new information? It adds
+++-- heartbeat 
+++-- state = running
+++-- codePath (= relative path of program)
+++-- git remote and commit -> I likely get this via _save_git, or?!
+++-- root (= base path of program)
+++-"""
+++-
+++-import pandas as pd
+++-
+++-lst = []
+++-for k, v in probed.items():
+++-    v2 = dct.get(k)
+++-    v3 = dct.get("_" + k)
+++-    lst.append({"key": k, "probed": v, "org": v2, "_org": v3})
+++-
+++-pd.DataFrame(lst)
+++-
+++-# %%
+++-
+++-info.publish(probed)
++diff --git a/example_output/re
+\ No newline at end of file
+diff --git a/example_output/wandb-metadata.json b/example_output/wandb-metadata.json
+new file mode 100644
+index 0000000..34bc7bd
+--- /dev/null
++++ b/example_output/wandb-metadata.json
+@@ -0,0 +1,24 @@
++{
++    "os": "Linux-5.19.0-1024-aws-x86_64-with-glibc2.35",
++    "python": "3.10.6",
++    "heartbeatAt": "2023-05-09T17:42:54.375070",
++    "startedAt": "2023-05-09T17:42:54.370760",
++    "docker": null,
++    "cuda": null,
++    "args": [
++        "-f",
++        "/tmp/tmpnhb9j856.json",
++        "--HistoryManager.hist_file=:memory:"
++    ],
++    "state": "running",
++    "program": "<python with no main file>",
++    "git": {
++        "remote": "git@gitlab.img.astrazeneca.net:RA/experimental/litte_wandb.git",
++        "commit": "ebe48bbda2ce92fb624a503d744690a3e6c24745"
++    },
++    "email": "",
++    "root": "/home/ubuntu/git/litte_wandb",
++    "host": "cgebbe-r6id.img.astrazeneca.net",
++    "username": "ubuntu",
++    "executable": "/home/ubuntu/git/litte_wandb/venv/bin/python3"
++}
+diff --git a/little_wandb/__init__.py b/little_wandb/__init__.py
+new file mode 100644
+index 0000000..300107c
+--- /dev/null
++++ b/little_wandb/__init__.py
+@@ -0,0 +1 @@
++from ._main import dump_infos
+diff --git a/little_wandb/_main.py b/little_wandb/_main.py
+new file mode 100644
+index 0000000..43fdf13
+--- /dev/null
++++ b/little_wandb/_main.py
+@@ -0,0 +1,47 @@
++import wandb
++import pprint
++from pathlib import Path
++from wandb.sdk.internal.system.system_info import SystemInfo, SettingsStatic, Interface
++import logging
++
++_LOGGER = logging.getLogger(__name__)
++
++
++def _get_settings(logdir: Path, track_code: bool) -> SettingsStatic:
++    settings = wandb.setup().settings
++    settings._set_run_start_time()
++    settings.update(
++        {
++            "_offline": True,
++            "save_code": track_code,
++            "files_dir": logdir,
++        }
++    )
++
++    dct = settings.make_static()
++    _LOGGER.debug(pprint.pformat(dct))
++    return SettingsStatic(dct)
++
++
++class _DummyInterace(Interface):
++    def publish_stats(self, stats: dict) -> None:
++        raise NotImplementedError
++
++    def _publish_telemetry(self, telemetry: "TelemetryRecord") -> None:
++        raise NotImplementedError
++
++    def publish_files(self, files_dict: "FilesDict") -> None:
++        s = pprint.pformat(files_dict["files"])
++        _LOGGER.info(f"Wrote the following files: \n{s}")
++
++
++def dump_infos(logdir: Path, track_code: bool = True):
++    writer = _DummyInterace()
++    settings = _get_settings(logdir=logdir, track_code=track_code)
++    info = SystemInfo(settings, writer)
++
++    info_dct = info.probe()
++    _LOGGER.debug(pprint.pformat(info_dct))
++
++    logdir.mkdir(exist_ok=True, parents=True)
++    info.publish(info_dct)
+diff --git a/little_wandb/system_info.py b/little_wandb/system_info.py
+new file mode 100644
+index 0000000..a7ef2f5
+--- /dev/null
++++ b/little_wandb/system_info.py
+@@ -0,0 +1,268 @@
++# Information about the system and the environment
++import datetime
++import glob
++import json
++import logging
++import os
++import subprocess
++import sys
++from shutil import copyfile
++from typing import Any, Dict, List, Optional
++from urllib.parse import unquote
++
++from wandb.sdk.internal.settings_static import SettingsStatic
++from wandb.sdk.lib import filesystem
++from wandb.sdk.lib.filenames import (
++    CONDA_ENVIRONMENTS_FNAME,
++    DIFF_FNAME,
++    METADATA_FNAME,
++    REQUIREMENTS_FNAME,
++)
++from wandb.sdk.lib.git import GitRepo
++
++from wandb.sdk.internal.system.assets.interfaces import Interface
++
++logger = logging.getLogger(__name__)
++
++
++class SystemInfo:
++    # todo: this is mostly a copy of the legacy Meta class, but it should be refactored
++    def __init__(self, settings: SettingsStatic, interface: Interface) -> None:
++        logger.debug("System info init")
++        self.settings = settings
++
++        self.metadata_file_name = os.path.join(self.settings.files_dir, METADATA_FNAME)
++        self.backend_interface = interface
++        self.git = GitRepo(
++            root=self.settings.git_root,
++            remote=self.settings.git_remote,  # type: ignore
++            remote_url=self.settings.git_remote_url,
++            commit=self.settings.git_commit,
++        )
++        # Location under "code" directory in files where program was saved.
++        self.saved_program: Optional[os.PathLike] = None
++        # Locations under files directory where diff patches were saved.
++        self.saved_patches: List[str] = []
++        logger.debug("System info init done")
++
++    # todo: refactor these _save_* methods
++    def _save_pip(self) -> None:
++        """Save the current working set of pip packages to {REQUIREMENTS_FNAME}."""
++        logger.debug(
++            "Saving list of pip packages installed into the current environment"
++        )
++        try:
++            import pkg_resources
++
++            installed_packages = [d for d in iter(pkg_resources.working_set)]
++            installed_packages_list = sorted(
++                f"{i.key}=={i.version}" for i in installed_packages
++            )
++            with open(
++                os.path.join(self.settings.files_dir, REQUIREMENTS_FNAME), "w"
++            ) as f:
++                f.write("\n".join(installed_packages_list))
++        except Exception as e:
++            logger.exception(f"Error saving pip packages: {e}")
++        logger.debug("Saving pip packages done")
++
++    def _save_conda(self) -> None:
++        current_shell_is_conda = os.path.exists(os.path.join(sys.prefix, "conda-meta"))
++        if not current_shell_is_conda:
++            return None
++
++        logger.debug(
++            "Saving list of conda packages installed into the current environment"
++        )
++        try:
++            with open(
++                os.path.join(self.settings.files_dir, CONDA_ENVIRONMENTS_FNAME), "w"
++            ) as f:
++                subprocess.call(
++                    ["conda", "env", "export"], stdout=f, stderr=subprocess.DEVNULL
++                )
++        except Exception as e:
++            logger.exception(f"Error saving conda packages: {e}")
++        logger.debug("Saving conda packages done")
++
++    def _save_code(self) -> None:
++        logger.debug("Saving code")
++        if self.settings.program_relpath is None:
++            logger.warning("unable to save code -- program entry not found")
++            return None
++
++        root: str = self.git.root or os.getcwd()
++        program_relative: str = self.settings.program_relpath
++        filesystem.mkdir_exists_ok(
++            os.path.join(
++                self.settings.files_dir, "code", os.path.dirname(program_relative)
++            )
++        )
++        program_absolute = os.path.join(root, program_relative)
++        if not os.path.exists(program_absolute):
++            logger.warning("unable to save code -- can't find %s" % program_absolute)
++            return None
++        saved_program = os.path.join(self.settings.files_dir, "code", program_relative)
++        self.saved_program = program_relative  # type: ignore
++
++        if not os.path.exists(saved_program):
++            copyfile(program_absolute, saved_program)
++        logger.debug("Saving code done")
++
++    def _save_patches(self) -> None:
++        """Save the current state of this repository to one or more patches.
++
++        Makes one patch against HEAD and another one against the most recent
++        commit that occurs in an upstream branch. This way we can be robust
++        to history editing as long as the user never does "push -f" to break
++        history on an upstream branch.
++
++        Writes the first patch to <files_dir>/<DIFF_FNAME> and the second to
++        <files_dir>/upstream_diff_<commit_id>.patch.
++
++        """
++        if not self.git.enabled:
++            return None
++
++        logger.debug("Saving git patches")
++        try:
++            root = self.git.root
++            diff_args = ["git", "diff"]
++            if self.git.has_submodule_diff:
++                diff_args.append("--submodule=diff")
++
++            if self.git.dirty:
++                patch_path = os.path.join(self.settings.files_dir, DIFF_FNAME)
++                with open(patch_path, "wb") as patch:
++                    # we diff against HEAD to ensure we get changes in the index
++                    subprocess.check_call(
++                        diff_args + ["HEAD"], stdout=patch, cwd=root, timeout=5
++                    )
++                    self.saved_patches.append(
++                        os.path.relpath(patch_path, start=self.settings.files_dir)
++                    )
++
++            upstream_commit = self.git.get_upstream_fork_point()  # type: ignore
++            if upstream_commit and upstream_commit != self.git.repo.head.commit:
++                sha = upstream_commit.hexsha
++                upstream_patch_path = os.path.join(
++                    self.settings.files_dir, f"upstream_diff_{sha}.patch"
++                )
++                with open(upstream_patch_path, "wb") as upstream_patch:
++                    subprocess.check_call(
++                        diff_args + [sha], stdout=upstream_patch, cwd=root, timeout=5
++                    )
++                    self.saved_patches.append(
++                        os.path.relpath(
++                            upstream_patch_path, start=self.settings.files_dir
++                        )
++                    )
++        # TODO: A customer saw `ValueError: Reference at 'refs/remotes/origin/foo'
++        #  does not exist` so we now catch ValueError. Catching this error feels
++        #  too generic.
++        except (
++            ValueError,
++            subprocess.CalledProcessError,
++            subprocess.TimeoutExpired,
++        ) as e:
++            logger.error("Error generating diff: %s" % e)
++        logger.debug("Saving git patches done")
++
++    def _probe_git(self, data: Dict[str, Any]) -> Dict[str, Any]:
++        if self.settings.disable_git:
++            return data
++
++        # in case of manually passing the git repo info, `enabled` would be False,
++        # but we still want to save the git repo info
++        if not self.git.enabled and self.git.auto:
++            return data
++
++        logger.debug("Probing git")
++
++        data["git"] = {
++            "remote": self.git.remote_url,
++            "commit": self.git.last_commit,
++        }
++        data["email"] = self.git.email
++        data["root"] = self.git.root or data.get("root") or os.getcwd()
++        logger.debug("Probing git done")
++
++        return data
++
++    def probe(self) -> Dict[str, Any]:
++        """Probe the system for information about the current environment."""
++        # todo: refactor this quality code 🤮🤮🤮🤮🤮
++        logger.debug("Probing system")
++        data: Dict[str, Any] = dict()
++
++        data["os"] = self.settings._os
++        data["python"] = self.settings._python
++        data["heartbeatAt"] = datetime.datetime.utcnow().isoformat()
++        data["startedAt"] = datetime.datetime.utcfromtimestamp(
++            self.settings._start_time
++        ).isoformat()
++
++        data["docker"] = self.settings.docker
++
++        data["cuda"] = self.settings._cuda
++        data["args"] = self.settings._args
++        data["state"] = "running"
++
++        if self.settings.program is not None:
++            data["program"] = self.settings.program
++        if not self.settings.disable_code:
++            if self.settings.program_relpath is not None:
++                data["codePath"] = self.settings.program_relpath
++            elif self.settings._jupyter:
++                if self.settings.notebook_name:
++                    data["program"] = self.settings.notebook_name
++                elif self.settings._jupyter_path:
++                    if self.settings._jupyter_path.startswith("fileId="):
++                        unescaped = unquote(self.settings._jupyter_path)
++                        data["colab"] = (
++                            "https://colab.research.google.com/notebook#" + unescaped
++                        )
++                        data["program"] = self.settings._jupyter_name
++                    else:
++                        data["program"] = self.settings._jupyter_path
++                        data["root"] = self.settings._jupyter_root
++            # get the git repo info
++            data = self._probe_git(data)
++
++        if self.settings.anonymous != "true":
++            data["host"] = self.settings.host
++            data["username"] = self.settings.username
++            data["executable"] = sys.executable
++        else:
++            data.pop("email", None)
++            data.pop("root", None)
++
++        logger.debug("Probing system done")
++
++        return data
++
++    def publish(self, system_info: dict) -> None:
++        # save pip, conda, code patches to disk
++        if self.settings._save_requirements:
++            self._save_pip()
++            self._save_conda()
++        if self.settings.save_code:
++            self._save_code()
++            self._save_patches()
++
++        # save system_info to disk
++        with open(self.metadata_file_name, "w") as f:
++            s = json.dumps(system_info, indent=4)
++            f.write(s)
++            f.write("\n")
++        base_name = os.path.basename(self.metadata_file_name)
++        files = dict(files=[(base_name, "now")])
++
++        if self.saved_program:
++            saved_program = os.path.join("code", self.saved_program)
++            files["files"].append((glob.escape(saved_program), "now"))
++        for patch in self.saved_patches:
++            files["files"].append((glob.escape(patch), "now"))
++
++        # publish files to the backend
++        self.backend_interface.publish_files(files)  # type: ignore
