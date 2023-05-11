@@ -1,0 +1,7 @@
+[cache]
+    type = symlink
+[core]
+    autostage = true
+    remote = mys3
+['remote "mys3"']
+    url = s3://az-data-xfer/cgebbe/dvc_tutorial
